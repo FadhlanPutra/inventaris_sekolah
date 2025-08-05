@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class MaintenanceResource extends Resource
 {
@@ -42,7 +44,7 @@ class MaintenanceResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('catatan')
                     ->required()
-                    ->maxLength(255),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -81,6 +83,14 @@ class MaintenanceResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exports([
+                            ExcelExport::make('table')
+                                ->fromTable()
+                                ->withFilename(fn ($resource, $livewire, $model) =>
+                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
+                                ),
+                        ]),
                 ]),
             ]);
     }
