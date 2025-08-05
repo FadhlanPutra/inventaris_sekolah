@@ -26,8 +26,11 @@ class InventarisResource extends Resource
                 Forms\Components\TextInput::make('nama_barang')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kategori')
-                    ->maxLength(255),
+                Forms\Components\Select::make('category_id')
+                    ->label('Kategori')
+                    ->relationship(name: 'category', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('kondisi')
                     ->options([
                         'baik' => 'Baik',
@@ -61,7 +64,7 @@ class InventarisResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama_barang')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kategori')
+                Tables\Columns\TextColumn::make('category.name')->label('Kategori')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kondisi'),
                 Tables\Columns\TextColumn::make('jumlah')

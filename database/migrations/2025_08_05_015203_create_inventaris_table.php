@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('inventaris', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
             $table->string('nama_barang');
-            $table->string('kategori')->nullable();
+            $table->string('category')->nullable();
             $table->enum('kondisi', ['baik', 'rusak', 'perbaikan'])->default('baik');
             $table->integer('jumlah')->default(0);
             $table->enum('status', ['tersedia', 'digunakan', 'maintenance', 'hancur'])->default('tersedia');
