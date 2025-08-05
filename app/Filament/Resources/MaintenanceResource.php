@@ -51,8 +51,8 @@ class MaintenanceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('inventaris.nama_barang')
-                ->label('nama_barang')
-                ->searchable(),
+                    ->label('nama_barang')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('kondisi')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kerusakan')
