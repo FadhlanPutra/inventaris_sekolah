@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->date('borrow_time');
             $table->date('return_time')->nullable();
-            $table->string('penggunaanlab_id');
+            $table->string('labusage_id');
             $table->integer('quantity');
             $table->string('status');
             $table->timestamps();

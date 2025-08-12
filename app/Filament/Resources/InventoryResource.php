@@ -29,6 +29,7 @@ class InventoryResource extends Resource
                 Forms\Components\Select::make('category_id')
                     ->label('category')
                     ->relationship(name: 'category', titleAttribute: 'name')
+                    ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\Select::make('condition')

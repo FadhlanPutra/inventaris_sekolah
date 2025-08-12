@@ -9,11 +9,11 @@ use App\Traits\ClearsResponseCache;
 
 class Borrow extends Model
 {
-    protected $fillable = ['user_id', 'borrow_time', 'return_time', 'penggunaanlab_id', 'quantity', 'status'];
+    protected $fillable = ['user_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];
 
-    public function penggunaanlab(): BelongsTo
+    public function labusage(): BelongsTo
     {
-        return $this->belongsTo(PenggunaanLab::class);
+        return $this->belongsTo(LabUsage::class);
     }
 
     public function user(): BelongsTo

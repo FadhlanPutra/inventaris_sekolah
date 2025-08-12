@@ -33,9 +33,9 @@ class BorrowResource extends Resource
                     ->default(now()),
                 Forms\Components\DatePicker::make('return_time')
                     ->nullable(),
-                    Forms\Components\Select::make('penggunaanlab_id')
+                Forms\Components\Select::make('labusage_id')
                     ->label('Location')
-                    ->relationship(name: 'penggunaanlab', titleAttribute: 'no_lab')
+                    ->relationship(name: 'labusage', titleAttribute: 'num_lab')
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('quantity')
@@ -62,8 +62,10 @@ class BorrowResource extends Resource
                 Tables\Columns\TextColumn::make('return_time')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('location')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('labusage.num_lab')
+                    ->label('Location')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),

@@ -28,6 +28,7 @@ class MaintenanceResource extends Resource
                 Forms\Components\Select::make('inventory_id')
                     ->label('Nama_barang')
                     ->relationship(name: 'inventory', titleAttribute: 'item_name')
+                    ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('condition')
@@ -40,10 +41,8 @@ class MaintenanceResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('condition_after')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('add_notes')
-                    ->required()
                     ->columnSpanFull(),
             ]);
     }
