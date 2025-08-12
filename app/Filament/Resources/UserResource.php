@@ -39,7 +39,7 @@ class UserResource extends Resource
                     ->required(fn (string $context): bool => $context === 'create'),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
-                    ->multiple()
+                    ->required()
                     ->preload()
                     ->searchable(),
             ]);

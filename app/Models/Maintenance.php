@@ -9,11 +9,11 @@ use App\Traits\ClearsResponseCache;
 class Maintenance extends Model
 {
     use ClearsResponseCache;
-    protected $fillable = ['nama_barang', 'kondisi', 'kerusakan', 'kondisi_sebelum', 'kondisi_sesudah', 'catatan'];
+    protected $fillable = ['inventory_id', 'item_name', 'condition', 'breaking', 'condition_before', 'condition_after', 'add_notes'];
 
-    public function inventaris(): BelongsTo
+    public function inventory(): BelongsTo
     {
-        return $this->belongsTo(Inventaris::class);
+        return $this->belongsTo(Inventory::class);
     }
     
 }

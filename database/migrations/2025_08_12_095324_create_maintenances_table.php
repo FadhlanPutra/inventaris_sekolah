@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventaris_id')->nullable()->constrained('inventaris')->onDelete('set null');
-            $table->string('kondisi');
-            $table->string('kerusakan');
-            $table->string('kondisi_sebelum');
-            $table->string('kondisi_sesudah');
-            $table->string('catatan');
+            $table->foreignId('inventory_id')->nullable()->constrained('inventories')->onDelete('set null');
+            $table->string('condition');
+            $table->string('breaking');
+            $table->string('condition_before');
+            $table->string('condition_after');
+            $table->string('add_notes')->nullable();
             $table->timestamps();
         });
     }

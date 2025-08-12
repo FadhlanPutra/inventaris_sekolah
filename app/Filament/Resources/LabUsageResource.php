@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenggunaanLabResource\Pages;
-use App\Filament\Resources\PenggunaanLabResource\RelationManagers;
-use App\Models\PenggunaanLab;
+use App\Filament\Resources\LabUsageResource\Pages;
+use App\Filament\Resources\LabUsageResource\RelationManagers;
+use App\Models\LabUsage;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PenggunaanLabResource extends Resource
+class LabUsageResource extends Resource
 {
-    protected static ?string $model = PenggunaanLab::class;
+    protected static ?string $model = LabUsage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -26,16 +26,16 @@ class PenggunaanLabResource extends Resource
                 Forms\Components\TextInput::make('full_name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('no_lab')
+                Forms\Components\TextInput::make('num_lab')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('fungsi_lab')
+                Forms\Components\TextInput::make('lab_function')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kondisi_akhir')
+                Forms\Components\TextInput::make('end_state')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('catatan')
+                Forms\Components\TextInput::make('notes')
                     ->columnSpanFull()
             ]);
     }
@@ -46,14 +46,14 @@ class PenggunaanLabResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('no_lab')
+                Tables\Columns\TextColumn::make('num_lab')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fungsi_lab')
+                Tables\Columns\TextColumn::make('lab_function')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi_akhir')
+                Tables\Columns\TextColumn::make('end_state')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('catatan')
+                Tables\Columns\TextColumn::make('notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -87,9 +87,10 @@ class PenggunaanLabResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenggunaanLabs::route('/'),
-            'create' => Pages\CreatePenggunaanLab::route('/create'),
-            'edit' => Pages\EditPenggunaanLab::route('/{record}/edit'),
+            'index' => Pages\ListLabUsages::route('/'),
+            'create' => Pages\CreateLabUsage::route('/create'),
+            'edit' => Pages\EditLabUsage::route('/{record}/edit'),
         ];
     }
 }
+
