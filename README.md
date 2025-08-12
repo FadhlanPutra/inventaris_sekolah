@@ -10,7 +10,7 @@ Follow the steps below to set up and run the Borrow App on your local machine.
 ###  Prerequisites
 Make sure you have the following installed:
 
-- PHP (v8.x or higher)
+- PHP (v8.3 or higher)
 - Composer
 - Node.js and npm
 - MySQL or another database supported by Laravel
@@ -21,12 +21,12 @@ Make sure you have the following installed:
 
 #  Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/FadhlanPutra/inventaris_sekol.git
 ```
 
 #  Navigate to the project directory
 ```bash
-cd <repository-directory>
+cd inventaris_sekolah
 ```
 
 #  Open the project in VS Code
@@ -37,6 +37,11 @@ code .
 #  Install PHP dependencies using Composer
 ```bash
 composer install
+```
+
+#  Copy .env file
+```bash
+cp .env.example .env
 ```
 
 #  Generate a new application key
@@ -51,6 +56,7 @@ php artisan migrate --seed
 
 #  Create a Super Admin user (ID = 1)
 ```bash
+php artisan shield:generate --all
 php artisan shield:super-admin --user=1
 ```
 
@@ -77,7 +83,7 @@ Login using the following credentials:
 
 ```pgsql
 Email: admin@gmail.com
-Password: admin
+Password: admin123
 ```
 
 Run Email Verification
