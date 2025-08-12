@@ -8,5 +8,5 @@ use App\Traits\ClearsResponseCache;
 class PenggunaanLab extends Model
 {
     use ClearsResponseCache;
-    protected $fillable = ['full_name', 'no_lab', 'fungsi_lab', 'kondisi_akhir', 'catatan'];
+    protected $fillable = ['full_name', 'num_lab', 'lab_function', 'end_state', 'notes'];
 }

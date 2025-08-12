@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('penggunaan_labs', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
-            $table->integer('no_lab');
-            $table->string('fungsi_lab');
-            $table->string('kondisi_akhir');
-            $table->string('catatan');
+            $table->integer('num_lab');
+            $table->string('lab_function');
+            $table->string('end_state');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

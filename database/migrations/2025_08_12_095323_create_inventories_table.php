@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventaris', function (Blueprint $table) {
+        Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
-            $table->string('nama_barang');
+            $table->string('item_name');
             $table->string('category')->nullable();
-            $table->enum('kondisi', ['baik', 'rusak', 'perbaikan'])->default('baik');
-            $table->integer('jumlah')->default(0);
-            $table->enum('status', ['tersedia', 'digunakan', 'maintenance', 'hancur'])->default('tersedia');
-            $table->text('deskripsi')->nullable();
+            $table->enum('condition', ['good', 'damaged', 'repaired'])->default('good');
+            $table->integer('quantity')->default(0);
+            $table->enum('status', ['available', 'in_use', 'maintenance', 'broken'])->default('available');
+            $table->text('desc')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventaris');
+        Schema::dropIfExists('inventories');
     }
 };

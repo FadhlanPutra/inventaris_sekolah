@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InventarisResource\Pages;
-use App\Filament\Resources\InventarisResource\RelationManagers;
-use App\Models\Inventaris;
+use App\Filament\Resources\InventoryResource\Pages;
+use App\Filament\Resources\InventoryResource\RelationManagers;
+use App\Models\Inventory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class InventarisResource extends Resource
+class InventoryResource extends Resource
 {
-    protected static ?string $model = Inventaris::class;
+    protected static ?string $model = Inventory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,37 +23,37 @@ class InventarisResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_barang')
+                Forms\Components\TextInput::make('item_name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('category_id')
-                    ->label('Kategori')
+                    ->label('category')
                     ->relationship(name: 'category', titleAttribute: 'name')
                     ->searchable()
                     ->preload(),
-                Forms\Components\Select::make('kondisi')
+                Forms\Components\Select::make('condition')
                     ->options([
-                        'baik' => 'Baik',
-                        'rusak' => 'Rusak',
-                        'perbaikan' => 'Perbaikan',
+                        'good' => 'Good',
+                        'damaged' => 'Damaged',
+                        'repaired' => 'Repaired',
                     ])
                     ->required()
-                    ->default('baik'),
-                Forms\Components\TextInput::make('jumlah')
+                    ->default('good'),
+                Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
                     ->default(0),
                 Forms\Components\Select::make('status')
                     ->options([
-                        'tersedia' => 'Tersedia',
-                        'digunakan' => 'Digunakan',
+                        'available' => 'Available',
+                        'in_use' => 'In Use',
                         'maintenance' => 'Maintenance',
-                        'hancur' => 'Hancur',
+                        'broken' => 'Broken',
                     ])
                     ->required()
-                    ->default('tersedia')
+                    ->default('available')
                     ->disabledOn('create'),
-                Forms\Components\Textarea::make('deskripsi')
+                Forms\Components\Textarea::make('desc')
                     ->columnSpanFull(),
             ]);
     }
@@ -62,12 +62,13 @@ class InventarisResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_barang')
+                Tables\Columns\TextColumn::make('item_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('category.name')->label('Kategori')
+                Tables\Columns\TextColumn::make('category.name')->label('Category')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi'),
-                Tables\Columns\TextColumn::make('jumlah')
+                Tables\Columns\TextColumn::make('condition')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
@@ -104,9 +105,9 @@ class InventarisResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInventaris::route('/'),
-            'create' => Pages\CreateInventaris::route('/create'),
-            'edit' => Pages\EditInventaris::route('/{record}/edit'),
+            'index' => Pages\ListInventory::route('/'),
+            'create' => Pages\CreateInventory::route('/create'),
+            'edit' => Pages\EditInventory::route('/{record}/edit'),
         ];
     }
 }

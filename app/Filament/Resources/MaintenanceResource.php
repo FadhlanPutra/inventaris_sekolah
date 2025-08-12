@@ -25,24 +25,24 @@ class MaintenanceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('inventaris_id')
+                Forms\Components\Select::make('inventory_id')
                     ->label('Nama_barang')
-                    ->relationship(name: 'inventaris', titleAttribute: 'nama_barang')
+                    ->relationship(name: 'inventory', titleAttribute: 'item_name')
                     ->searchable()
                     ->preload(),
-                Forms\Components\TextInput::make('kondisi')
+                Forms\Components\TextInput::make('condition')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kerusakan')
+                Forms\Components\TextInput::make('breaking')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kondisi_sebelum')
+                Forms\Components\TextInput::make('condition_before')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kondisi_sesudah')
+                Forms\Components\TextInput::make('condition_after')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('catatan')
+                Forms\Components\TextInput::make('add_notes')
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -52,18 +52,18 @@ class MaintenanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('inventaris.nama_barang')
-                    ->label('nama_barang')
+                Tables\Columns\TextColumn::make('inventories.item_name')
+                    ->label('item_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi')
+                Tables\Columns\TextColumn::make('condition')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kerusakan')
+                Tables\Columns\TextColumn::make('breaking')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi_sebelum')
+                Tables\Columns\TextColumn::make('condition_before')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi_sesudah')
+                Tables\Columns\TextColumn::make('condition_after')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('catatan')
+                Tables\Columns\TextColumn::make('add_notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

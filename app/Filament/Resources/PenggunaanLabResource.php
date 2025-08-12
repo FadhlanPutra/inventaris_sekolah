@@ -25,17 +25,17 @@ class PenggunaanLabResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('full_name')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('no_lab')
+                      ->maxLength(255),
+                Forms\Components\TextInput::make('num_lab')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('fungsi_lab')
+                Forms\Components\TextInput::make('lab_function')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kondisi_akhir')
+                Forms\Components\TextInput::make('end_state')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('catatan')
+                Forms\Components\TextInput::make('notes')
                     ->columnSpanFull()
             ]);
     }
@@ -46,14 +46,14 @@ class PenggunaanLabResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('no_lab')
+                Tables\Columns\TextColumn::make('num_lab')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fungsi_lab')
+                Tables\Columns\TextColumn::make('lab_function')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kondisi_akhir')
+                Tables\Columns\TextColumn::make('end_state')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('catatan')
+                Tables\Columns\TextColumn::make('notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

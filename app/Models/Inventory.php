@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\ClearsResponseCache;
 
-class Inventaris extends Model
+class Inventory extends Model
 {
     use ClearsResponseCache;
-    protected $fillable = ['nama_barang', 'kategori', 'kondisi', 'jumlah', 'status', 'deskripsi'];
+
+    protected $table = 'inventories';
+    protected $fillable = ['item_name', 'category', 'condition', 'quantity', 'status', 'desc'];
 
     public function category(): BelongsTo
     {
@@ -21,5 +23,4 @@ class Inventaris extends Model
     {
         return $this->hasMany(Maintenance::class);
     }
-
 }
