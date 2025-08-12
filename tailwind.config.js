@@ -8,9 +8,13 @@ export default {
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     './storage/framework/views/*.php',
     './resources/views/**/*.blade.php',
-    "./node_modules/flowbite/**/*.js",
+    './vendor/filament/**/*.blade.php',       // Tambah: Blade Filament
+    './vendor/filament/**/*.php',             // Tambah: PHP Filament yang ada class Tailwind
+    './vendor/filament/**/*.js',              // Tambah: JS Filament
+    './vendor/filament/**/*.vue',             // Kalau ada komponen Vue
+    './node_modules/flowbite/**/*.js',
   ],
-  
+
   theme: {
         extend: {
             screens: {
