@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenggunaanLabResource\Pages;
-use App\Filament\Resources\PenggunaanLabResource\RelationManagers;
-use App\Models\PenggunaanLab;
+use App\Filament\Resources\LabUsageResource\Pages;
+use App\Filament\Resources\LabUsageResource\RelationManagers;
+use App\Models\LabUsage;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PenggunaanLabResource extends Resource
+class LabUsageResource extends Resource
 {
-    protected static ?string $model = PenggunaanLab::class;
+    protected static ?string $model = LabUsage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -25,7 +25,7 @@ class PenggunaanLabResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('full_name')
                     ->required()
-                      ->maxLength(255),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('num_lab')
                     ->required()
                     ->numeric(),
@@ -87,9 +87,10 @@ class PenggunaanLabResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenggunaanLabs::route('/'),
-            'create' => Pages\CreatePenggunaanLab::route('/create'),
-            'edit' => Pages\EditPenggunaanLab::route('/{record}/edit'),
+            'index' => Pages\ListLabUsages::route('/'),
+            'create' => Pages\CreateLabUsage::route('/create'),
+            'edit' => Pages\EditLabUsage::route('/{record}/edit'),
         ];
     }
 }
+
