@@ -12,6 +12,7 @@ class Inventaris extends Model
     use ClearsResponseCache;
     protected $fillable = ['nama_barang', 'kategori', 'kondisi', 'jumlah', 'status', 'deskripsi'];
 
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
