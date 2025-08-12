@@ -13,6 +13,6 @@ class Category extends Model
 
     public function inventaris(): HasMany
     {
-        return $this->hasMany(Inventaris::class);
+        return $this->hasMany(Inventory::class);
     }
 }
