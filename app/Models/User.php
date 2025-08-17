@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Traits\ClearsResponseCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Filament\Models\Concerns\SendsFilamentPasswordResetNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +15,10 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, ClearsResponseCache;
+    protected static array $cacheClearUrls = [
+        '/dashboard/users',
+    ];
 
     /**
      * The attributes that are mass assignable.

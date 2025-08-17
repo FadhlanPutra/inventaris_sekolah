@@ -17,7 +17,21 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag'; // ikon biasa
+    protected static ?string $activeNavigationIcon = 'heroicon-s-tag'; // ikon ketika aktif
+
+    // 2. Label navigasi
+    protected static ?string $navigationLabel = 'Category';
+
+    // 3. Posisi di menu (urutan)
+    protected static ?int $navigationSort = 1; // angka kecil = lebih depan
+
+    // 5. Tambahkan badge jumlah
+    public static function getNavigationBadge(): ?string
+    {
+        // return Borrow::where('status', 'pending')->count();
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

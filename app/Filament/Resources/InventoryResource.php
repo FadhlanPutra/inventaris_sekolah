@@ -17,7 +17,21 @@ class InventoryResource extends Resource
 {
     protected static ?string $model = Inventory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube'; // ikon biasa
+    // protected static ?string $activeNavigationIcon = 'heroicon-s-cube'; // ikon ketika aktif
+
+    // 2. Label navigasi
+    protected static ?string $navigationLabel = 'Lab Usage';
+
+    // 3. Posisi di menu (urutan)
+    protected static ?int $navigationSort = 2; // angka kecil = lebih depan
+
+    // 5. Tambahkan badge jumlah
+    public static function getNavigationBadge(): ?string
+    {
+        // return Borrow::where('status', 'pending')->count();
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

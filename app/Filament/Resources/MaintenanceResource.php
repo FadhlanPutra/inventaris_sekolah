@@ -19,7 +19,21 @@ class MaintenanceResource extends Resource
 {
     protected static ?string $model = Maintenance::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver'; // ikon biasa
+    protected static ?string $activeNavigationIcon = 'heroicon-s-wrench-screwdriver'; // ikon ketika aktif
+
+    // 2. Label navigasi
+    protected static ?string $navigationLabel = 'Maintenance';
+
+    // 3. Posisi di menu (urutan)
+    protected static ?int $navigationSort = 5; // angka kecil = lebih depan
+
+    // 5. Tambahkan badge jumlah
+    public static function getNavigationBadge(): ?string
+    {
+        // return Borrow::where('status', 'pending')->count();
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

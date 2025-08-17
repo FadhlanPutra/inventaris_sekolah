@@ -17,7 +17,21 @@ class LabUsageResource extends Resource
 {
     protected static ?string $model = LabUsage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop'; // ikon biasa
+    protected static ?string $activeNavigationIcon = 'heroicon-s-computer-desktop'; // ikon ketika aktif
+
+    // 2. Label navigasi
+    protected static ?string $navigationLabel = 'Lab Usage';
+
+    // 3. Posisi di menu (urutan)
+    protected static ?int $navigationSort = 4; // angka kecil = lebih depan
+
+    // 5. Tambahkan badge jumlah
+    public static function getNavigationBadge(): ?string
+    {
+        // return Borrow::where('status', 'pending')->count();
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

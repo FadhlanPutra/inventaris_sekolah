@@ -9,6 +9,10 @@ use App\Traits\ClearsResponseCache;
 
 class Borrow extends Model
 {
+    use ClearsResponseCache;
+    protected static array $cacheClearUrls = [
+        '/dashboard/borrows',
+    ];
     protected $fillable = ['user_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];
 
     public function labusage(): BelongsTo

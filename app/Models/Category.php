@@ -9,6 +9,9 @@ use App\Traits\ClearsResponseCache;
 class Category extends Model
 {
     use ClearsResponseCache;
+    protected static array $cacheClearUrls = [
+        '/dashboard/categories',
+    ];
     protected $fillable = ['name'];
 
     public function inventaris(): HasMany

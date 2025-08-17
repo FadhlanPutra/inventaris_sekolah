@@ -17,7 +17,31 @@ class BorrowResource extends Resource
 {
     protected static ?string $model = Borrow::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // 1. Ikon default dan ikon saat aktif
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down'; // ikon biasa
+    protected static ?string $activeNavigationIcon = 'heroicon-s-archive-box'; // ikon ketika aktif
+
+    // 2. Label navigasi
+    protected static ?string $navigationLabel = 'Borrow';
+
+    // 3. Posisi di menu (urutan)
+    protected static ?int $navigationSort = 3; // angka kecil = lebih depan
+
+    // 4. Grup navigasi
+    // protected static ?string $navigationGroup = 'Manajemen';
+
+    // 5. Tambahkan badge jumlah
+    public static function getNavigationBadge(): ?string
+    {
+        // return Borrow::where('status', 'pending')->count();
+        return static::getModel()::count();
+    }
+
+    // 6. Warna badge kondisional
+    // public static function getNavigationBadgeColor(): ?string
+    // {
+    //     return Borrow::where('status', 'pending')->count() > 5 ? 'warning' : 'primary';
+    // }
 
     public static function form(Form $form): Form
     {
@@ -40,7 +64,8 @@ class BorrowResource extends Resource
                     ->preload(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(1),
                 Forms\Components\Select::make('status')
                     ->options([
                         'available' => 'Available',
