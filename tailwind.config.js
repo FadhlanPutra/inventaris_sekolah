@@ -1,17 +1,19 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import preset from './vendor/filament/support/tailwind.config.preset';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+  presets: [preset],
   darkMode: 'class',
   content: [
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     './storage/framework/views/*.php',
     './resources/views/**/*.blade.php',
-    './vendor/filament/**/*.blade.php',       // Tambah: Blade Filament
-    './vendor/filament/**/*.php',             // Tambah: PHP Filament yang ada class Tailwind
-    './vendor/filament/**/*.js',              // Tambah: JS Filament
-    './vendor/filament/**/*.vue',             // Kalau ada komponen Vue
+    './vendor/filament/**/*.blade.php',
+    './vendor/filament/**/*.php',
+    './vendor/filament/**/*.js',
+    './vendor/filament/**/*.vue',
     './node_modules/flowbite/**/*.js',
   ],
 

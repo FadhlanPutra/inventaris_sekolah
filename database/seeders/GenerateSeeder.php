@@ -26,5 +26,16 @@ class GenerateSeeder extends Seeder
         Artisan::call('icons:cache');
 
         $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
+
+        // Jalankan npm run build
+        $this->command->warn("Menjalankan npm run build...");
+        exec('npm run build 2>&1', $output, $returnVar);
+
+        if ($returnVar === 0) {
+            $this->command->info("npm run build berhasil dijalankan!");
+        } else {
+            $this->command->error("npm run build gagal dijalankan.");
+            $this->command->line(implode("\n", $output));
+        }
     }
 }

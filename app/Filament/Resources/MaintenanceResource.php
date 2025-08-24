@@ -75,8 +75,10 @@ class MaintenanceResource extends Resource
                 Tables\Columns\TextColumn::make('condition_before')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition_after')
+                    ->placeholder('No Condition After')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('add_notes')
+                    ->placeholder('No Notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

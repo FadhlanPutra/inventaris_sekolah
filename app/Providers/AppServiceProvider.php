@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,12 +23,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (
-            app()->environment('production') || 
+        if (app()->environment('production') || 
             str_contains(request()->getHost(), 'tprojectlan.my.id')) 
         {
             URL::forceScheme('https');
         }
+
         Gate::policy(\Spatie\Permission\Models\Role::class, \App\Policies\RolePolicy::class);
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_END,
+            fn (): string => '<meta name="theme-color" content="#F0A004" />'
+        );
     }
 }

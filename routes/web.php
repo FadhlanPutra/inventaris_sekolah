@@ -21,6 +21,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
-
+Route::get('/400', function () {
+    return abort(400);
+});
+// Route::get('/401', function () {
+//     return abort(401);
+// });
+// Route::get('/403', function () {
+//     return abort(403);
+// });
+// Route::get('/404', function () {
+//     return abort(404);
+// });
+// Route::get('/500', function () {
+//     return abort(500);
+// });
+// Route::get('/503', function () {
+//     return abort(503);
+// });
 
 require __DIR__.'/auth.php';

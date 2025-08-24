@@ -42,7 +42,9 @@ class LabUsageResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('num_lab')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->placeholder(1)
+                    ->minValue(1),
                 Forms\Components\TextInput::make('lab_function')
                     ->required()
                     ->maxLength(255),
@@ -66,8 +68,10 @@ class LabUsageResource extends Resource
                 Tables\Columns\TextColumn::make('lab_function')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('end_state')
+                    ->placeholder('No End State')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('notes')
+                    ->placeholder('No Notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

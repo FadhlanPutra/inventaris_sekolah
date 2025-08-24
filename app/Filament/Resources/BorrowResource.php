@@ -50,6 +50,7 @@ class BorrowResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->label('Name')
                     ->relationship(name: 'user', titleAttribute: 'name')
+                    ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\DatePicker::make('borrow_time')
@@ -60,11 +61,13 @@ class BorrowResource extends Resource
                 Forms\Components\Select::make('labusage_id')
                     ->label('Location')
                     ->relationship(name: 'labusage', titleAttribute: 'num_lab')
+                    ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
+                    ->placeholder(1)
                     ->minValue(1),
                 Forms\Components\Select::make('status')
                     ->options([

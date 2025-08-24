@@ -18,10 +18,10 @@ class InventoryResource extends Resource
     protected static ?string $model = Inventory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube'; // ikon biasa
-    // protected static ?string $activeNavigationIcon = 'heroicon-s-cube'; // ikon ketika aktif
+    protected static ?string $activeNavigationIcon = 'heroicon-s-cube'; // ikon ketika aktif
 
     // 2. Label navigasi
-    protected static ?string $navigationLabel = 'Lab Usage';
+    protected static ?string $navigationLabel = 'Inventory';
 
     // 3. Posisi di menu (urutan)
     protected static ?int $navigationSort = 2; // angka kecil = lebih depan
@@ -57,7 +57,8 @@ class InventoryResource extends Resource
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
-                    ->default(0),
+                    ->placeholder(1)
+                    ->minValue(0),
                 Forms\Components\Select::make('status')
                     ->options([
                         'available' => 'Available',
@@ -87,6 +88,9 @@ class InventoryResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('desc')
+                    ->placeholder('No Description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

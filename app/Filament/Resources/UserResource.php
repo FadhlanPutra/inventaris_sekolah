@@ -27,6 +27,9 @@ class UserResource extends Resource
     // 3. Posisi di menu (urutan)
     protected static ?int $navigationSort = 5; // angka kecil = lebih depan
 
+    // 4. Grup navigasi
+    protected static ?string $navigationGroup = 'Users';
+
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
@@ -69,8 +72,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
+                    ->placeholder('Not Verified')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('roles.name'),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->placeholder('No Role'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -1,0 +1,14 @@
+@import '../../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config './tailwind.pesat.config.js';
+
+.fi-body, .fi-main, .fi-layout  {
+    background-color: #ffffff;
+}
+
+/* mode gelap */
+.dark .fi-body,
+.dark .fi-main,
+.dark .fi-layout {
+    background-color: #101223; /* warna gelap */
+}
