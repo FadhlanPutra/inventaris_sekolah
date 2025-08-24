@@ -10,7 +10,9 @@ use App\Traits\ClearsResponseCache;
 class Inventory extends Model
 {
     use ClearsResponseCache;
-
+    protected static array $cacheClearUrls = [
+        '/dashboard/inventories',
+    ];
     protected $table = 'inventories';
     protected $fillable = ['item_name', 'category', 'condition', 'quantity', 'status', 'desc'];
 

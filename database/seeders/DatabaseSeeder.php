@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +15,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        $this->call(ShieldSeeder::class);
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'), // Ensure to hash the password
+        ]);
+        
+        $this->call([
+            ShieldSeeder::class,
+            GenerateSeeder::class
         ]);
     }
 }
