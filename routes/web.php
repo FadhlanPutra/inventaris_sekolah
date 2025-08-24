@@ -13,6 +13,10 @@ Route::get('/', function () {
 //     ->middleware(['auth', 'verified'])
 //     ->name('dashboard');
 
+// Route::get('/dashboard', function () {
+//     return redirect()->route('filament.dashboard.pages.dashboard');
+// })->name('dashboard');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
@@ -21,9 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
-Route::get('/400', function () {
-    return abort(400);
-});
+// Route::get('/400', function () {
+//     return abort(400);
+// });
 // Route::get('/401', function () {
 //     return abort(401);
 // });

@@ -23,7 +23,7 @@ test('password can be confirmed', function () {
 
     $response
         ->assertHasNoErrors()
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('filament.dashboard.pages.dashboard', absolute: false));
 });
 
 test('password is not confirmed with invalid password', function () {
