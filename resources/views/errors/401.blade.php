@@ -44,34 +44,34 @@
 
                     <!-- Error Title -->
                     <h2 class="mb-6 text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white">
-                        Akses Tidak Diizinkan
+                        Access Denied
                     </h2>
 
                     <!-- Error Description -->
                     <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-md mx-auto">
-                        Anda tidak memiliki izin untuk mengakses halaman ini. Silakan masuk terlebih dahulu atau kembali ke halaman utama.
+                       You do not have permission to access this page. Please log in first or return to the homepage.
                     </p>
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a 
-                            href="{{ route('login') }}" 
+                        <a
+                            href="{{ route('login') }}"
                             class="group inline-flex items-center justify-center px-8 py-4 text-white font-semibold rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-yellow-300/50 dark:focus:ring-yellow-500/50"
                         >
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                             </svg>
-                            Masuk
+                            Sign in
                         </a>
-                        
-                        <a 
-                            href="{{ url('/') }}" 
+
+                        <a
+                            href="{{ url('/') }}"
                             class="group inline-flex items-center justify-center px-8 py-4 text-zinc-700 dark:text-zinc-200 font-semibold rounded-2xl bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border border-zinc-200 dark:border-zinc-600 focus:outline-none focus:ring-4 focus:ring-zinc-300/50 dark:focus:ring-zinc-500/50"
                         >
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
-                            Halaman Utama
+                            Main page
                         </a>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Butuh bantuan? Hubungi administrator sistem
+                        Need help? Contact the system administrator.
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
     </main>
 
     {{-- Dark mode toggle (optional) --}}
-    <button 
+    <button
         type="button"
         id="theme-toggle"
         class="fixed top-4 right-4 p-3 rounded-2xl bg-white dark:bg-zinc-800 backdrop-blur-xl border border-zinc-200 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-300/50 dark:focus:ring-zinc-500/50"

@@ -22,13 +22,13 @@
         .dark {
             color-scheme: dark;
         }
-        
+
         /* Fix any potential backdrop blur issues */
         .backdrop-blur-xl {
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
         }
-        
+
         /* Ensure gradient text works properly */
         .bg-clip-text {
             -webkit-background-clip: text;
@@ -63,34 +63,34 @@
 
                     <!-- Error Title -->
                     <h2 class="mb-6 text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white">
-                        Akses Dilarang
+                        Access Forbidden
                     </h2>
 
                     <!-- Error Description -->
                     <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-md mx-auto">
-                        Anda tidak memiliki hak akses untuk melihat halaman ini. Hubungi administrator jika Anda yakin ini adalah kesalahan.
+                        You do not have permission to view this page. Please contact the administrator if you believe this is an error.
                     </p>
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a 
-                            href="{{ url()->previous() }}" 
+                        <a
+                            href="{{ url()->previous() }}"
                             class="group inline-flex items-center justify-center px-8 py-4 text-white font-semibold rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300/50 dark:focus:ring-red-500/50"
                         >
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
-                            Kembali
+                            Back
                         </a>
-                        
-                        <a 
-                            href="{{ url('/') }}" 
+
+                        <a
+                            href="{{ url('/') }}"
                             class="group inline-flex items-center justify-center px-8 py-4 text-zinc-700 dark:text-zinc-200 font-semibold rounded-2xl bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border border-zinc-200 dark:border-zinc-600 focus:outline-none focus:ring-4 focus:ring-zinc-300/50 dark:focus:ring-zinc-500/50"
                         >
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
-                            Halaman Utama
+                           Main page
                         </a>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                         </svg>
-                        Akses ditolak oleh kebijakan keamanan sistem
+                        Access denied by system security policy
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
     </main>
 
     {{-- Dark mode toggle --}}
-    <button 
+    <button
         type="button"
         id="theme-toggle"
         class="fixed top-4 right-4 p-3 rounded-2xl bg-white dark:bg-zinc-800 backdrop-blur-xl border border-zinc-200 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-300/50 dark:focus:ring-zinc-500/50"
