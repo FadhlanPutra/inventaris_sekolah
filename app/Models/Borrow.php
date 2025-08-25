@@ -13,7 +13,7 @@ class Borrow extends Model
     protected static array $cacheClearUrls = [
         '/dashboard/borrows',
     ];
-    protected $fillable = ['user_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];
+    protected $fillable = ['user_id', 'item_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];
 
     public function labusage(): BelongsTo
     {
@@ -23,5 +23,10 @@ class Borrow extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(Inventory::class);
     }
 }

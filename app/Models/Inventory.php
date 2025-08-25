@@ -26,4 +26,9 @@ class Inventory extends Model
     {
         return $this->hasMany(Maintenance::class);
     }
+
+    public function borrow():HasMany
+    {
+        return $this->hasMany(Borrow::class);
+    }
 }
