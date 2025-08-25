@@ -75,7 +75,20 @@ class BorrowResource extends Resource
                     ->required()
                     ->numeric()
                     ->placeholder(1)
-                    ->minValue(1),
+                    ->minValue(1)
+                     ->rules([
+                        function (callable $get) {
+                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                $inventoryId = $get('item_id');
+                                if ($inventoryId) {
+                                    $inventory = Inventory::find($inventoryId);
+                                    if ($inventory && $value > $inventory->quantity) {
+                                        $fail("Jumlah peminjaman tidak boleh lebih dari stok ({$inventory->quantity}).");
+                                    }
+                                }
+                            };
+                        },
+                    ]),
                 Forms\Components\Hidden::make('status')
                     ->default('pending'),
                     // ->options([
