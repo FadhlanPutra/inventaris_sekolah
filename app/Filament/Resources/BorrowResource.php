@@ -47,17 +47,24 @@ class BorrowResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
+                Forms\Components\Hidden::make('user_id')
+                    ->default(fn () => auth()->id()),
+                Forms\Components\TextInput::make('user_name')
                     ->label('Name')
-                    ->relationship(name: 'user', titleAttribute: 'name')
+                    ->disabled()
+                    ->default(fn () => auth()->user()->name),
+                Forms\Components\DateTimePicker::make('borrow_time')
+                    ->required()
+                    ->readOnly()
+                    ->default(now()),
+                // Forms\Components\DatePicker::make('return_time')
+                //     ->nullable(),
+                Forms\Components\Select::make('item_id')
+                    ->label('Name Item')
+                    ->relationship(name: 'item', titleAttribute: 'item_name')
                     ->required()
                     ->searchable()
                     ->preload(),
-                Forms\Components\DatePicker::make('borrow_time')
-                    ->required()
-                    ->default(now()),
-                Forms\Components\DatePicker::make('return_time')
-                    ->nullable(),
                 Forms\Components\Select::make('labusage_id')
                     ->label('Location')
                     ->relationship(name: 'labusage', titleAttribute: 'num_lab')
@@ -69,11 +76,12 @@ class BorrowResource extends Resource
                     ->numeric()
                     ->placeholder(1)
                     ->minValue(1),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'available' => 'Available',
-                        'unavailable' => 'Unavailable',
-                    ])
+                Forms\Components\Hidden::make('status')
+                    ->default('pending'),
+                    // ->options([
+                    //     'available' => 'Available',
+                    //     'unavailable' => 'Unavailable',
+                    // ])
             ]);
     }
 
@@ -81,11 +89,11 @@ class BorrowResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
-                    ->date()
+                    ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_time')
                     ->date()

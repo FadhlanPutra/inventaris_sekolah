@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
-            $table->string('item_name');
+            $table->string('item_name')->constrained('borrows')->onDelete('set null');
             $table->string('category')->nullable();
             $table->enum('condition', ['good', 'damaged', 'repaired'])->default('good');
             $table->integer('quantity')->default(0);
