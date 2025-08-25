@@ -54,20 +54,20 @@
 
                     <!-- Error Description -->
                     <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-md mx-auto">
-                        Layanan sementara tidak tersedia karena server sedang sibuk atau dalam perawatan.  
-                        Silakan coba lagi nanti.
+                       The service is temporarily unavailable because the server is busy or under maintenance.
+                    Please try again later.
                     </p>
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a 
-                            href="{{ url('/') }}" 
+                        <a
+                            href="{{ url('/') }}"
                             class="group inline-flex items-center justify-center px-8 py-4 text-white font-semibold rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300/50 dark:focus:ring-blue-500/50"
                         >
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
-                            Halaman Utama
+                            Main page
                         </a>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                        Server sedang sibuk atau dalam perawatan, coba lagi nanti.
+                        The server is busy or under maintenance, please try again later.
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
     </main>
 
     {{-- Dark mode toggle --}}
-    <button 
+    <button
         type="button"
         id="theme-toggle"
         class="fixed top-4 right-4 p-3 rounded-2xl bg-white dark:bg-zinc-800 backdrop-blur-xl border border-zinc-200 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-300/50 dark:focus:ring-zinc-500/50"
