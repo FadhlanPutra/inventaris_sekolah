@@ -54,8 +54,8 @@
 
                     <!-- Error Description -->
                     <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-md mx-auto">
-                        “The request could not be processed due to an invalid format or data.
-                        Please check your input and try again.”
+                        The request could not be processed due to an invalid format or data.
+                        Please check your input and try again.
                     </p>
 
                     <!-- Action Buttons -->

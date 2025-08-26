@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
-            $table->string('item_name')->constrained('borrows')->onDelete('set null');
-            $table->string('category')->nullable();
+            $table->string('item_name');
+            $table->string('category');
             $table->enum('condition', ['good', 'damaged', 'repaired'])->default('good');
-            $table->integer('quantity')->default(0);
+            $table->integer('quantity')->default(1);
             $table->enum('status', ['available', 'in_use', 'maintenance', 'broken'])->default('available');
             $table->text('desc')->nullable();
             $table->timestamps();
