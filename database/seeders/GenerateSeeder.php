@@ -24,7 +24,6 @@ class GenerateSeeder extends Seeder
         Artisan::call('shield:generate', ['--all' => true], $this->command->getOutput());
         Artisan::call('shield:super-admin', ['--user' => $user->id]);
         Artisan::call('icons:cache');
-        Artisan::call('storage:link');
 
         $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
 
