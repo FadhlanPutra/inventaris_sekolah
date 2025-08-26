@@ -7,7 +7,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TrustProxies extends Middleware
 {
-    // protected $proxies = '127.0.0.1';
+    // protected $proxies = [
+    //     '127.0.0.1',
+    //     '::1',
+    //     'localhost',
+    // ];
 
     protected $headers =
         Request::HEADER_X_FORWARDED_FOR |

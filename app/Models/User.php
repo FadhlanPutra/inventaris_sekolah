@@ -14,8 +14,10 @@ use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, ClearsResponseCache;
@@ -32,6 +34,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'avatar_url',
         'role',
     ];
 
@@ -73,5 +76,24 @@ class User extends Authenticatable implements FilamentUser
         public function canAccessPanel(Panel $panel): bool
     {
         return true; // beri akses semua user
+    }
+
+    public function getFilamentAvatarUrl(): ?string 
+    {
+        $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
+
+        // Pastikan tidak ada infinite loop
+        if (!$this->$avatarColumn) {
+            return null;
+        }
+        
+        // Gunakan disk yang sama dengan konfigurasi package
+        $disk = config('filament-edit-profile.disk', 'public');
+
+        try {
+            return Storage::disk($disk)->url($this->$avatarColumn);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

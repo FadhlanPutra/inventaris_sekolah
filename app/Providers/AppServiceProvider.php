@@ -30,10 +30,5 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Gate::policy(\Spatie\Permission\Models\Role::class, \App\Policies\RolePolicy::class);
-
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::HEAD_END,
-            fn (): string => '<meta name="theme-color" content="#F0A004" />'
-        );
     }
 }
