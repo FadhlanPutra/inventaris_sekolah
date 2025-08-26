@@ -56,7 +56,6 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Filament Shield'),            
                 NavigationGroup::make()
                     ->label('Users')
-                    ->icon('heroicon-o-users')
                     ->collapsed(),            
             ])
             ->sidebarCollapsibleOnDesktop()

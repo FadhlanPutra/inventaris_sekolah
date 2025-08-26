@@ -37,14 +37,22 @@ class LabUsageResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('full_name')
+                    ->required()
+                    ->default(fn () => auth()->user()->name)
+                    ->formatStateUsing(fn ($state, $record) => $record?->full_name ?? auth()->user()->name),
                 Forms\Components\TextInput::make('full_name')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('num_lab')
+                    ->label('Name')
+                    ->dehydrated(false)
+                    ->disabled()
+                    ->default(fn () => auth()->user()->name)
+                    ->formatStateUsing(fn ($state, $record) => $record?->full_name ?? auth()->user()->name),
+                Forms\Components\Select::make('num_lab')
+                    ->label('Number Lab')
                     ->required()
-                    ->numeric()
-                    ->placeholder(1)
-                    ->minValue(1),
+                    ->options(array_combine(range(1, 6), range(1, 6)))
+                    ->placeholder('Select Lab Number'),
                 Forms\Components\TextInput::make('lab_function')
                     ->required()
                     ->maxLength(255),
@@ -66,8 +74,10 @@ class LabUsageResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('lab_function')
+                    ->label('Lab Function')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('end_state')
+                    ->label('End State')
                     ->placeholder('No End State')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('notes')

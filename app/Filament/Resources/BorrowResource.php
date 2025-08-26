@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BorrowResource\Pages;
-use App\Filament\Resources\BorrowResource\RelationManagers;
-use App\Models\Borrow;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Borrow;
+use Filament\Forms\Form;
 use App\Models\Inventory;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\BorrowResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\BorrowResource\RelationManagers;
 
 class BorrowResource extends Resource
 {
@@ -49,11 +49,16 @@ class BorrowResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Hidden::make('user_id')
-                    ->default(fn () => auth()->id()),
-                Forms\Components\TextInput::make('user_name')
+                    ->required()
+                    ->default(fn () => auth()->id())
+                    ->formatStateUsing(fn ($state, $record) => $record?->user_name ?? auth()->id()),
+                Forms\Components\TextInput::make('user_id')
+                    ->required()
                     ->label('Name')
+                    ->dehydrated(false)
                     ->disabled()
-                    ->default(fn () => auth()->user()->name),
+                    ->default(fn () => auth()->user()->name)
+                    ->formatStateUsing(fn ($state, $record) => $record?->user_id ?? auth()->id()),
                 Forms\Components\DateTimePicker::make('borrow_time')
                     ->required()
                     ->readOnly()
@@ -120,6 +125,11 @@ class BorrowResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'active',
+                        'gray'    => 'finish',
+                    ])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

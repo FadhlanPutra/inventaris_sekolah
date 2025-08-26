@@ -27,15 +27,28 @@ class GenerateSeeder extends Seeder
 
         $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
 
-        // Jalankan npm run build
-        $this->command->warn("Menjalankan npm run build...");
-        exec('npm run build 2>&1', $output, $returnVar);
-
-        if ($returnVar === 0) {
-            $this->command->info("npm run build berhasil dijalankan!");
+        // Jalankan npm install
+        $this->command->warn("Menjalankan npm install...");
+        exec('npm install 2>&1', $outputInstall, $returnInstall);
+            
+        if ($returnInstall === 0) {
+            $this->command->info("npm install berhasil!");
         } else {
-            $this->command->error("npm run build gagal dijalankan.");
-            $this->command->line(implode("\n", $output));
+            $this->command->error("npm install gagal.");
+            $this->command->line(implode("\n", $outputInstall));
+            return; // berhenti jika gagal install
         }
+        
+        // Setelah install sukses, lanjut build
+        $this->command->warn("Menjalankan npm run build...");
+        exec('npm run build 2>&1', $outputBuild, $returnBuild);
+        
+        if ($returnBuild === 0) {
+            $this->command->info("npm run build berhasil!");
+        } else {
+            $this->command->error("npm run build gagal.");
+            $this->command->line(implode("\n", $outputBuild));
+        }
+
     }
 }

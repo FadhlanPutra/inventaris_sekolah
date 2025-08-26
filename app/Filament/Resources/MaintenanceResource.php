@@ -40,7 +40,7 @@ class MaintenanceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('inventory_id')
-                    ->label('Nama_barang')
+                    ->label('Item Name')
                     ->relationship(name: 'inventory', titleAttribute: 'item_name')
                     ->required()
                     ->searchable()
@@ -49,6 +49,7 @@ class MaintenanceResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('breaking')
+                    ->label('Damage')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('condition_before')
@@ -71,6 +72,7 @@ class MaintenanceResource extends Resource
                 Tables\Columns\TextColumn::make('condition')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('breaking')
+                    ->label('Damage')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition_before')
                     ->searchable(),

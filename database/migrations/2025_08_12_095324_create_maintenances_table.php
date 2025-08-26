@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('condition');
             $table->string('breaking');
             $table->string('condition_before');
-            $table->string('condition_after');
+            $table->string('condition_after')->nullable();
             $table->string('add_notes')->nullable();
             $table->timestamps();
         });

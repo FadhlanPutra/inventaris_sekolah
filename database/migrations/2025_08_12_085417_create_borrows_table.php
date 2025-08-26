@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('item_id');
-            $table->date('borrow_time');
-            $table->date('return_time')->nullable();
-            $table->string('labusage_id');
+            $table->dateTime('borrow_time');
+            $table->dateTime('return_time')->nullable();
+            $table->tinyInteger('labusage_id');
             $table->integer('quantity');
-            $table->string('status');
+            $table->enum('status', ['pending', 'active', 'finished'])->default('pending');
             $table->timestamps();
         });
     }
