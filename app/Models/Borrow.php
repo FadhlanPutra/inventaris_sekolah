@@ -29,4 +29,51 @@ class Borrow extends Model
     {
         return $this->belongsTo(Inventory::class);
     }
+
+    protected static function booted()
+{
+    // Saat create → kurangi stok
+    static::created(function ($borrow) {
+        if ($borrow->item) {
+            $borrow->item->decrement('quantity', $borrow->quantity);
+        }
+    });
+
+    // Saat update
+    static::updating(function ($borrow) {
+        // Jika status berubah jadi finished → isi return_time
+        if ($borrow->isDirty('status') && $borrow->status === 'finished') {
+            $borrow->return_time = now();
+
+            // Kembalikan stok ke inventory
+            if ($borrow->item) {
+                $borrow->item->increment('quantity', $borrow->quantity);
+            }
+        }
+
+        // Jika quantity berubah → sesuaikan stok (hanya berlaku saat edit quantity, biasanya tidak terjadi karena field disable)
+        if ($borrow->isDirty('quantity')) {
+            $old = $borrow->getOriginal('quantity');
+            $new = $borrow->quantity;
+            $diff = $new - $old;
+
+            if ($diff > 0) {
+                $borrow->item->decrement('quantity', $diff);
+            } elseif ($diff < 0) {
+                $borrow->item->increment('quantity', abs($diff));
+            }
+        }
+    });
+
+    // Saat delete → kembalikan stok
+    static::deleted(function ($borrow) {
+        if ($borrow->item) {
+            $borrow->item->increment('quantity', $borrow->quantity);
+        }
+    });
+}
+
+
+
+
 }

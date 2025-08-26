@@ -44,21 +44,22 @@ class BorrowResource extends Resource
     //     return Borrow::where('status', 'pending')->count() > 5 ? 'warning' : 'primary';
     // }
 
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Hidden::make('user_id')
-                    ->required()
-                    ->default(fn () => auth()->id())
-                    ->formatStateUsing(fn ($state, $record) => $record?->user_name ?? auth()->id()),
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->label('Name')
-                    ->dehydrated(false)
-                    ->disabled()
-                    ->default(fn () => auth()->user()->name)
-                    ->formatStateUsing(fn ($state, $record) => $record?->user_id ?? auth()->id()),
+                ->default(fn () => auth()->id())
+                ->dehydrated(true), // ini yang masuk DB
+
+                Forms\Components\TextInput::make('user_name')
+                ->label('Name')
+                ->default(fn () => auth()->user()->name)
+                ->disabled()
+                ->dehydrated(false) // tidak masuk DB
+                ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
+
                 Forms\Components\DateTimePicker::make('borrow_time')
                     ->required()
                     ->readOnly()
@@ -82,25 +83,30 @@ class BorrowResource extends Resource
                     ->numeric()
                     ->placeholder(1)
                     ->minValue(1)
-                     ->rules([
-                        function (callable $get) {
-                            return function (string $attribute, $value, \Closure $fail) use ($get) {
-                                $inventoryId = $get('item_id');
-                                if ($inventoryId) {
-                                    $inventory = Inventory::find($inventoryId);
-                                    if ($inventory && $value > $inventory->quantity) {
-                                        $fail("Jumlah peminjaman tidak boleh lebih dari stok ({$inventory->quantity}).");
-                                    }
+                    ->rules(fn (callable $get, $context) => $context === 'create' ? [
+                        function (string $attribute, $value, \Closure $fail) use ($get) {
+                            $inventoryId = $get('item_id'); // ambil item_id dari Select
+                            if ($inventoryId) {
+                                $inventory = Inventory::find($inventoryId);
+                                if ($inventory && $value > $inventory->quantity) {
+                                    $fail("Jumlah peminjaman tidak boleh lebih dari stok ({$inventory->quantity}).");
                                 }
-                            };
+                            }
                         },
-                    ]),
+                    ] : []),
                 Forms\Components\Hidden::make('status')
-                    ->default('pending'),
-                    // ->options([
-                    //     'available' => 'Available',
-                    //     'unavailable' => 'Unavailable',
-                    // ])
+                    ->default('pending')
+                    ->visibleOn('create'),
+
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'pending'   => 'Pending',
+                        'active' => 'Active',
+                        'finished'  => 'Finished',
+                    ])
+                    ->visibleOn('edit')
+                    ->required(),
+                    
             ]);
     }
 
@@ -115,11 +121,14 @@ class BorrowResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_time')
-                    ->date()
+                    ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labusage.num_lab')
                     ->label('Location')
                     ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('item.item_name')
+        
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
