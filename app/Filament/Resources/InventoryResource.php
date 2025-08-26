@@ -40,7 +40,7 @@ class InventoryResource extends Resource
                 Forms\Components\TextInput::make('item_name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('category_id')
+                Forms\Components\Select::make('category')
                     ->label('category')
                     ->relationship(name: 'category', titleAttribute: 'name')
                     ->required()

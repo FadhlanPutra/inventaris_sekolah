@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lab_usages', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
+            $table->string('user_id');
             $table->tinyInteger('num_lab');
             $table->string('lab_function');
             $table->string('end_state')->nullable();

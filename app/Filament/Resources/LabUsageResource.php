@@ -37,17 +37,16 @@ class LabUsageResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('full_name')
-                    ->required()
-                    ->default(fn () => auth()->user()->name)
-                    ->formatStateUsing(fn ($state, $record) => $record?->full_name ?? auth()->user()->name),
-                Forms\Components\TextInput::make('full_name')
+                Forms\Components\Hidden::make('user_id')
+                    ->default(fn () => auth()->id())
+                    ->dehydrated(true), // ini yang masuk DB
+                Forms\Components\TextInput::make('user_name')
                     ->required()
                     ->label('Name')
                     ->dehydrated(false)
-                    ->disabled()
                     ->default(fn () => auth()->user()->name)
-                    ->formatStateUsing(fn ($state, $record) => $record?->full_name ?? auth()->user()->name),
+                    ->disabled()
+                    ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
                 Forms\Components\Select::make('num_lab')
                     ->label('Number Lab')
                     ->required()
@@ -68,7 +67,7 @@ class LabUsageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('full_name')
+                Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
                     ->numeric()
