@@ -79,6 +79,7 @@ class InventoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('item_name')
+                    ->label('Item Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')
                     ->searchable(),

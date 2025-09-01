@@ -62,7 +62,7 @@ class StatsOverview extends BaseWidget
             $query->whereNull('return_time')
                   ->orWhere('return_time', '>', now());
         })
-        ->count();
+        ->sum("quantity");
         
         // Jika masih 0, coba hitung semua record untuk debug
         if ($dipinjam == 0) {

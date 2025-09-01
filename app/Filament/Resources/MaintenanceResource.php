@@ -66,8 +66,8 @@ class MaintenanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('inventories.item_name')
-                    ->label('item_name')
+                Tables\Columns\TextColumn::make('inventory.item_name')
+                    ->label('Item Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition')
                     ->searchable(),
