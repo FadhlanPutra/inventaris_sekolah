@@ -10,7 +10,7 @@ class BlogPostsChart extends ChartWidget
 {
     protected static ?string $heading = 'Lab Usage Statistics';
     protected static ?int $sort = 2;
-
+    
     protected function getData(): array
     {
          $data = $this->getLabUsageDataPerMonth();

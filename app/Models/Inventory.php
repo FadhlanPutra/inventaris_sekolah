@@ -11,10 +11,11 @@ class Inventory extends Model
 {
     use ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/inventories',
     ];
     protected $table = 'inventories';
-    protected $fillable = ['item_name', 'category', 'condition', 'quantity', 'status', 'desc'];
+    protected $fillable = ['item_name', 'category', 'quantity', 'status', 'desc'];
 
 
     public function category(): BelongsTo

@@ -26,7 +26,7 @@ class BorrowResource extends Resource
     protected static ?string $navigationLabel = 'Borrow';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 3; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 4; // angka kecil = lebih depan
 
     // 4. Grup navigasi
     // protected static ?string $navigationGroup = 'Manajemen';
@@ -72,7 +72,10 @@ class BorrowResource extends Resource
                     ->preload(),
                 Forms\Components\Select::make('labusage_id')
                     ->label('Location')
-                    ->relationship(name: 'labusage', titleAttribute: 'num_lab')
+                    ->options(
+                        \App\Models\LabUsage::pluck('num_lab', 'id')
+                            ->map(fn ($num) => "Lab {$num}")
+                    )
                     ->required()
                     ->searchable()
                     ->preload(),
@@ -95,11 +98,10 @@ class BorrowResource extends Resource
                 Forms\Components\Hidden::make('status')
                     ->default('pending')
                     ->visibleOn('create'),
-
                 Forms\Components\Select::make('status')
                     ->options([
                         'pending'   => 'Pending',
-                        'active' => 'Active',
+                        'active'    => 'Active',
                         'finished'  => 'Finished',
                     ])
                     ->visibleOn('edit')
@@ -114,6 +116,7 @@ class BorrowResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->placeholder("Invalid or deleted user")
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
                     ->dateTime()
@@ -124,9 +127,11 @@ class BorrowResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labusage.num_lab')
                     ->label('Location')
+                    ->formatStateUsing(fn ($state) => "Lab {$state}")
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('item.item_name')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
@@ -135,7 +140,7 @@ class BorrowResource extends Resource
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'active',
-                        'gray'    => 'finish',
+                        'primary'    => 'finished',
                     ])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

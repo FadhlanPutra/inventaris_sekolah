@@ -10,6 +10,7 @@ class Maintenance extends Model
 {
     use ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/maintenances',
     ];
     protected $fillable = ['inventory_id', 'item_name', 'condition', 'breaking', 'condition_before', 'condition_after', 'add_notes'];

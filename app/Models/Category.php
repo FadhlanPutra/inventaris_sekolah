@@ -10,6 +10,7 @@ class Category extends Model
 {
     use ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/categories',
     ];
     protected $fillable = ['name'];

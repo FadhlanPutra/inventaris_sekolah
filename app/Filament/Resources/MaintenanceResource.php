@@ -68,6 +68,7 @@ class MaintenanceResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('inventory.item_name')
                     ->label('Item Name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition')
                     ->searchable(),
