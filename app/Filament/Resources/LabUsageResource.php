@@ -50,7 +50,12 @@ class LabUsageResource extends Resource
                 Forms\Components\Select::make('num_lab')
                     ->label('Number Lab')
                     ->required()
-                    ->options(array_combine(range(1, 6), range(1, 6)))
+                    ->options(function () {
+                        $all = range(1, 6);
+                        $used = LabUsage::pluck('num_lab')->toArray();
+                        $available = array_diff($all, $used);
+                        return array_combine($available, $available);
+                    })
                     ->placeholder('Select Lab Number'),
                 Forms\Components\TextInput::make('lab_function')
                     ->required()

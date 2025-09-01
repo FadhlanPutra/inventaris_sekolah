@@ -25,6 +25,7 @@ use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use JibayMcs\FilamentTour\FilamentTourPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class, // Hanya dashboard yang muncul di sidebar
+                // Pages\Dashboard::class, // Hanya dashboard yang muncul di sidebar
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -69,7 +70,7 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsed(),
             ])
             ->sidebarCollapsibleOnDesktop()
-            ->sidebarFullyCollapsibleOnDesktop()
+            // ->sidebarFullyCollapsibleOnDesktop()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -87,6 +88,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                FilamentTourPlugin::make(),
                 FilamentEditProfilePlugin::make()
                         ->shouldRegisterNavigation(false)
                         ->setIcon('heroicon-o-user')
