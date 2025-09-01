@@ -113,12 +113,13 @@ class BorrowResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
+                    ->placeholder("Invalid or deleted user")
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_time')
+                    ->placeholder('Not Returned Yet')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labusage.num_lab')

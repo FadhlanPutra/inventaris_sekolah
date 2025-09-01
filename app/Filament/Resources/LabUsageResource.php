@@ -73,6 +73,7 @@ class LabUsageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->placeholder("Invalid or deleted user")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
                     ->numeric()
