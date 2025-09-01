@@ -50,16 +50,14 @@ class BorrowResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Hidden::make('user_id')
-                ->default(fn () => auth()->id())
-                ->dehydrated(true), // ini yang masuk DB
-
+                    ->default(fn () => auth()->id())
+                    ->dehydrated(true), // ini yang masuk DB
                 Forms\Components\TextInput::make('user_name')
-                ->label('Name')
-                ->default(fn () => auth()->user()->name)
-                ->disabled()
-                ->dehydrated(false) // tidak masuk DB
-                ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
-
+                    ->label('Name')
+                    ->default(fn () => auth()->user()->name)
+                    ->disabled()
+                    ->dehydrated(false) // tidak masuk DB
+                    ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
                 Forms\Components\DateTimePicker::make('borrow_time')
                     ->required()
                     ->readOnly()
@@ -128,7 +126,6 @@ class BorrowResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('item.item_name')
-        
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
