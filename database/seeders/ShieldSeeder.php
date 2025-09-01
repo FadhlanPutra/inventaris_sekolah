@@ -13,13 +13,54 @@ class ShieldSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $rolesWithPermissions = '[
-        {"name":"super_admin","guard_name":"web","permissions":["view_borrow","view_any_borrow","create_borrow","update_borrow","restore_borrow","restore_any_borrow","replicate_borrow","reorder_borrow","delete_borrow","delete_any_borrow","force_delete_borrow","force_delete_any_borrow","view_category::item","view_any_category::item","create_category::item","update_category::item","restore_category::item","restore_any_category::item","replicate_category::item","reorder_category::item","delete_category::item","delete_any_category::item","force_delete_category::item","force_delete_any_category::item","view_item","view_any_item","create_item","update_item","restore_item","restore_any_item","replicate_item","reorder_item","delete_item","delete_any_item","force_delete_item","force_delete_any_item","view_item::borrow","view_any_item::borrow","create_item::borrow","update_item::borrow","restore_item::borrow","restore_any_item::borrow","replicate_item::borrow","reorder_item::borrow","delete_item::borrow","delete_any_item::borrow","force_delete_item::borrow","force_delete_any_item::borrow","view_role","view_any_role","create_role","update_role","delete_role","delete_any_role","view_user","view_any_user","create_user","update_user","restore_user","restore_any_user","replicate_user","reorder_user","delete_user","delete_any_user","force_delete_user","force_delete_any_user","widget_AvailableItemsWidget"]},
-        
-        {"name":"siswa","guard_name":"web","permissions":["view_borrow","create_borrow","view_any_borrow","view_item"]},
+      {
+        "name": "super_admin",
+        "guard_name": "web",
+        "permissions": [
+          "view_borrow", "view_any_borrow", "create_borrow", "update_borrow", "restore_borrow",
+          "restore_any_borrow", "replicate_borrow", "reorder_borrow", "delete_borrow", "delete_any_borrow",
+          "force_delete_borrow", "force_delete_any_borrow",
 
-        {"name":"guru","guard_name":"web","permissions":["view_borrow","create_borrow","view_any_borrow","view_item", "view_lab::usage", "view_any_lab::usage", "create_lab::usage"]}
-        
-        ]';
+          "view_category", "view_any_category", "create_category", "update_category", "restore_category",
+          "restore_any_category", "replicate_category", "reorder_category", "delete_category", "delete_any_category",
+          "force_delete_category", "force_delete_any_category",
+
+          "view_inventory", "view_any_inventory", "create_inventory", "update_inventory", "restore_inventory",
+          "restore_any_inventory", "replicate_inventory", "reorder_inventory", "delete_inventory", "delete_any_inventory", "force_delete_inventory", "force_delete_any_inventory",
+
+          "view_lab::usage", "view_any_lab::usage", "create_lab::usage", "update_lab::usage", "restore_lab::usage",
+          "restore_any_lab::usage", "replicate_lab::usage", "reorder_lab::usage", "delete_lab::usage",
+          "delete_any_lab::usage", "force_delete_lab::usage", "force_delete_any_lab::usage",
+
+          "view_maintenance", "view_any_maintenance", "create_maintenance", "update_maintenance", "restore_maintenance", "restore_any_maintenance", "replicate_maintenance", "reorder_maintenance", "delete_maintenance", "delete_any_maintenance", "force_delete_maintenance", "force_delete_any_maintenance",
+
+          "view_role", "view_any_role", "create_role", "update_role", "delete_role", "delete_any_role",
+
+          "view_user", "view_any_user", "create_user", "update_user", "restore_user", "restore_any_user",
+          "replicate_user", "reorder_user", "delete_user", "delete_any_user", "force_delete_user", "force_delete_any_user",
+
+          "widget_ChartsDuo", "widget_StatsOverview", "widget_BlogPostsChart", "widget_BlogPosts2Chart"
+        ]
+      },
+      {
+        "name": "siswa",
+        "guard_name": "web",
+        "permissions": [
+          "view_borrow", "create_borrow", "view_any_borrow",
+          "view_inventory", "view_maintenance"
+        ]
+      },
+      {
+        "name": "guru",
+        "guard_name": "web",
+        "permissions": [
+          "view_borrow", "create_borrow", "view_any_borrow",
+          "view_inventory", "view_maintenance",
+          "view_lab::usage", "view_any_lab::usage", "create_lab::usage"
+        ]
+      }
+    ]
+    ';
         $directPermissions = '[]';
 
         static::makeRolesWithPermissions($rolesWithPermissions);

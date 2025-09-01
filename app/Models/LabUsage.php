@@ -10,6 +10,7 @@ class LabUsage extends Model
 {
     use ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/lab-usages',
     ];
     protected $table = 'lab_usages';

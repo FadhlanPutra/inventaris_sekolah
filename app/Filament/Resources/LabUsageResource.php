@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
 class LabUsageResource extends Resource
 {
     protected static ?string $model = LabUsage::class;
@@ -24,7 +25,7 @@ class LabUsageResource extends Resource
     protected static ?string $navigationLabel = 'Lab Usage';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 4; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 3; // angka kecil = lebih depan
 
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
@@ -52,9 +53,19 @@ class LabUsageResource extends Resource
                     ->required()
                     ->options(function () {
                         $all = range(1, 6);
-                        $used = LabUsage::pluck('num_lab')->toArray();
+
+                        // Ambil semua num_lab yang sudah dipakai HARI INI saja
+                        $used = LabUsage::whereDate('created_at', now()->toDateString())
+                            ->pluck('num_lab')
+                            ->toArray();
+
+                        // Hitung lab yang masih tersedia
                         $available = array_diff($all, $used);
-                        return array_combine($available, $available);
+
+                        // Tampilkan label "Lab X"
+                        return collect($available)
+                            ->mapWithKeys(fn ($num) => [$num => "Lab {$num}"])
+                            ->toArray();
                     })
                     ->placeholder('Select Lab Number'),
                 Forms\Components\TextInput::make('lab_function')
@@ -76,7 +87,7 @@ class LabUsageResource extends Resource
                     ->placeholder("Invalid or deleted user")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
-                    ->numeric()
+                    ->formatStateUsing(fn ($state) => "Lab {$state}")
                     ->sortable(),
                 Tables\Columns\TextColumn::make('lab_function')
                     ->label('Lab Function')
@@ -89,9 +100,10 @@ class LabUsageResource extends Resource
                     ->placeholder('No Notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Borrowed At')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -124,6 +136,19 @@ class LabUsageResource extends Resource
             'create' => Pages\CreateLabUsage::route('/create'),
             'edit' => Pages\EditLabUsage::route('/{record}/edit'),
         ];
+    }
+
+        public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Kalau admin → tampilkan semua
+        if (auth()->user()->hasRole('super_admin')) {
+            return $query;
+        }
+
+        // Kalau bukan admin → tampilkan data user itu sendiri
+        return $query->where('user_id', auth()->id());
     }
 }
 

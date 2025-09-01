@@ -46,14 +46,6 @@ class InventoryResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
-                Forms\Components\Select::make('condition')
-                    ->options([
-                        'good' => 'Good',
-                        'damaged' => 'Damaged',
-                        'repaired' => 'Repaired',
-                    ])
-                    ->required()
-                    ->default('good'),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
@@ -80,15 +72,16 @@ class InventoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('item_name')
                     ->label('Item Name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('condition')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('desc')
                     ->placeholder('No Description')

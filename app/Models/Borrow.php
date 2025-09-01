@@ -11,6 +11,7 @@ class Borrow extends Model
 {
     use ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/borrows',
     ];
     protected $fillable = ['user_id', 'item_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];

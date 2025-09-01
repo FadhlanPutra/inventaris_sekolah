@@ -22,6 +22,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, ClearsResponseCache;
     protected static array $cacheClearUrls = [
+        '/dashboard',
         '/dashboard/users',
     ];
 
