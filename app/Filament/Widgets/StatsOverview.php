@@ -16,19 +16,22 @@ class StatsOverview extends BaseWidget
     {
         return [
            Stat::make('Laboratory Total Stock', $this->getTotalInventory())
-                ->description('All available items in stock')
+                ->description('Press for details')
                 ->descriptionIcon('heroicon-m-cube')
-                ->color('primary'),
+                ->color('primary')
+                ->url(route('filament.dashboard.resources.inventories.index')),
 
             Stat::make('Borrowed Items', $this->getBarangDipinjam())
-                ->description('7% increase in usage')
+                ->description('Press for Details')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('warning'),
+                ->color('warning')
+                ->url(route('filament.dashboard.resources.borrows.index')),
 
             Stat::make('Items Under Maintenance', $this->getMaintenance())
-                ->description('3% increase from last month')
+                ->description('Press for Details')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+                ->color('success')
+                ->url(route('filament.dashboard.resources.maintenances.index')),
         ];
     }
 
