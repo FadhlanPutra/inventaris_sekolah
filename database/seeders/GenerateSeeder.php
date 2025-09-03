@@ -14,18 +14,33 @@ class GenerateSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::where('email', 'admin@gmail.com')->first();
+        // $user = User::where('email', 'admin@gmail.com')->first();
+        $user = User::orderBy('id', 'asc')->first();
 
         if (!$user) {
-            $this->command->error("User admin@gmail.com tidak ditemukan.");
+            $this->command->warn("Akun untuk super_admin tidak tersedia. silahkan buat terlebih dahulu di DatabaseSeeder.php.");
             return;
         }
 
+        $this->command->newLine();
+        $this->command->warn("AKUN '{$user->email}' AKAN MENJADI SUPER_ADMIN");
+
         Artisan::call('shield:generate', ['--all' => true], $this->command->getOutput());
         Artisan::call('shield:super-admin', ['--user' => $user->id]);
-        Artisan::call('icons:cache');
-
         $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
+        
+        
+        $this->command->info("Menjalankan optimasi cache...");
+        Artisan::call('icons:cache');
+        
+        // cek cache:warm-pages
+        $returnWarm = Artisan::call('cache:warm-pages');
+        if ($returnWarm === 0) {
+            $this->command->info("cache:warm-pages berhasil dijalankan.");
+        } else {
+            $this->command->error("cache:warm-pages gagal dijalankan.");
+            $this->command->line(Artisan::output()); // tampilkan output error dari command
+        }
 
         // Jalankan npm install
         $this->command->warn("Menjalankan npm install...");
@@ -49,6 +64,5 @@ class GenerateSeeder extends Seeder
             $this->command->error("npm run build gagal.");
             $this->command->line(implode("\n", $outputBuild));
         }
-
     }
 }

@@ -10,6 +10,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/tour.js',
                 'resources/js/darkMode.js',
                 'resources/css/filament/dashboard/themes/pesat.css',
             ],

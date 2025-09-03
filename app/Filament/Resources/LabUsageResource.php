@@ -72,7 +72,6 @@ class LabUsageResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('end_state')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('notes')
                     ->columnSpanFull()

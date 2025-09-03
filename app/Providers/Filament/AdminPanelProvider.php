@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
@@ -34,8 +33,9 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('dashboard')
             ->path('/dashboard')
-            ->brandLogo(asset('images/logo.png'))
-            ->favicon(asset('images/logo_x.png'))
+            // app_asset() ada di app/Helpers/helpers.php
+            ->brandLogo(app_asset('images/logo.png'))
+            ->favicon(app_asset('images/logo_x.png'))
             ->brandLogoHeight('100px')
             ->default()
             ->registration()
@@ -86,6 +86,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->spa()
+            ->unsavedChangesAlerts()
             ->plugins([
                 FilamentShieldPlugin::make(),
                 FilamentTourPlugin::make(),
@@ -101,7 +103,7 @@ class AdminPanelProvider extends PanelProvider
                 ThemesPlugin::make()
                     ->registerTheme([
                         Pesat::getName() => Pesat::class,
-                    ]),
+                    ])
             ]);
     }
 }

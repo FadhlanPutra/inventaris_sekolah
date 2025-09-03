@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +13,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin123'), // Ensure to hash the password
-        ]);
+        
+        // cek apakah user admin sudah ada
+        $user = User::where('email', 'admin@gmail.com')->first();
+
+        if (!$user) {
+            $this->command->warn("User admin@gmail.com belum ada. Membuat user baru...");
+            User::factory()->create([
+                'name' => 'Admin',
+                'email' => 'admin@gmail.com',
+                'password' => bcrypt('admin123'),
+            ]);
+            $this->command->info("User admin@gmail.com berhasil dibuat.");
+        } else {
+            $this->command->info("User admin@gmail.com sudah ada. Skip create.");
+        }
         
         $this->call([
             ShieldSeeder::class,
