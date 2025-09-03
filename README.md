@@ -54,15 +54,11 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
-#  Create a Super Admin user (ID = 1)
+#  Then, press 0 and enter
 ```bash
-php artisan shield:generate --all
-php artisan shield:super-admin --user=1
-```
-
-#  Install Node modules
-```bash
-npm install
+  Which panel do you want to generate permissions/policies for?
+  dashboard .............. 0
+  > 0
 ```
 
 #  Compile frontend assets
@@ -78,6 +74,8 @@ php artisan serve
 Output success message and login details
 Setup complete! You can now access the application at:
 http://localhost:8000
+or
+http://127.0.0.1
 
 Login using the following credentials:
 

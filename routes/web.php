@@ -37,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/404', function () {
 //     return abort(404);
 // });
+// Route::get('/419', function () {
+//     return abort(419);
+// });
 // Route::get('/500', function () {
 //     return abort(500);
 // });

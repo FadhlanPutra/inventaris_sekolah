@@ -2,11 +2,10 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
-use Filament\Pages\Dashboard as BaseDashboard;
-use JibayMcs\FilamentTour\Tour\HasTour;
-use JibayMcs\FilamentTour\Tour\Tour;
 use JibayMcs\FilamentTour\Tour\Step;
+use JibayMcs\FilamentTour\Tour\Tour;
+use JibayMcs\FilamentTour\Tour\HasTour;
+use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
@@ -320,5 +319,4 @@ public function tours(): array
             ->route('/dashboard')
     ];
 }
-    
 }

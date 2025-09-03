@@ -16,6 +16,7 @@ use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
@@ -37,6 +38,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'password',
         'avatar_url',
         'role',
+        'has_seen_tour',
     ];
 
     /**
