@@ -4,14 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Artisan;
 
 class WarmPageCache extends Command
 {
-    protected $signature = 'cache:warm-pages';
+    protected $signature = 'cache:warm-pages {--fresh : Clear cache before warming}';
     protected $description = 'Pre-warm page caches by visiting important URLs';
 
     public function handle()
     {
+        if ($this->option('fresh')) {
+            $this->warn("Clearing response cache...");
+            Artisan::call('responsecache:clear');
+        }
+
         $urls = [
             route('filament.dashboard.auth.login'),
             route('filament.dashboard.auth.register'),
@@ -36,14 +43,34 @@ class WarmPageCache extends Command
             route('password.request'),
             route('filament.dashboard.pages.themes'),
             route('filament.dashboard.pages.edit-profile'),
+
+            // url('flux/editor.css'),
+            // url('flux/editor.js'),
+            // url('flux/editor.min.js'),
+            url('flux/flux.js'),
+            url('flux/flux.min.js'),
+            url('livewire/livewire.js'),
+
+            url('images/logo.png'),
+            url('images/logo_x.png'),
+
+            Vite::asset('resources/css/app.css'),
+            Vite::asset('resources/js/app.js'),
+            Vite::asset('resources/js/tour.js'),
+            Vite::asset('resources/js/darkMode.js'),
+            Vite::asset('resources/css/filament/dashboard/themes/pesat.css'),
         ];
 
-        foreach ($urls as $url) {
-            try {
-                Http::get($url);
+        $responses = Http::pool(fn ($pool) =>
+            array_map(fn ($url) => $pool->get($url), $urls)
+        );
+
+        foreach ($urls as $i => $url) {
+            $response = $responses[$i];
+            if ($response->successful()) {
                 $this->info("Cache warmed for: {$url}");
-            } catch (\Exception $e) {
-                $this->error("Gagal warming: {$url} | Error: {$e->getMessage()}");
+            } else {
+                $this->error("Gagal warming: {$url} | Status: {$response->status()}");
             }
         }
 

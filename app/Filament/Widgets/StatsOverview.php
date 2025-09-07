@@ -15,7 +15,7 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-           Stat::make('Laboratory Total Stock', $this->getTotalInventory())
+           Stat::make('Inventories Total Stock', $this->getTotalInventory())
                 ->description('Press for details')
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('primary')
@@ -23,13 +23,13 @@ class StatsOverview extends BaseWidget
 
             Stat::make('Borrowed Items', $this->getBarangDipinjam())
                 ->description('Press for Details')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->descriptionIcon('heroicon-m-clipboard-document-list')
                 ->color('warning')
                 ->url(route('filament.dashboard.resources.borrows.index')),
 
             Stat::make('Items Under Maintenance', $this->getMaintenance())
                 ->description('Press for Details')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->descriptionIcon('heroicon-m-wrench')
                 ->color('success')
                 ->url(route('filament.dashboard.resources.maintenances.index')),
         ];
@@ -54,11 +54,9 @@ class StatsOverview extends BaseWidget
         
         // Coba berbagai kemungkinan nilai status
         $dipinjam = Borrow::where(function ($query) {
-            $query->where('status', 'active')
-                  ->orWhere('status', 'approved')
-                  ->orWhere('status', 'borrowed')
-                  ->orWhere('status', 'ongoing')
-                  ->orWhere('status', 'pending');
+            $query->where('status', 'pending')
+                  ->orWhere('status', 'active')
+                  ->orWhere('status', 'finished');
         })
         // Tambahan: pastikan belum dikembalikan
         ->where(function ($query) {
@@ -92,15 +90,16 @@ class StatsOverview extends BaseWidget
     private function getMaintenance(): string
     {
         // Debug maintenance juga
-        $maintenance = Maintenance::where(function ($query) {
-            $query->where('condition', 'maintenance')
-                  ->orWhere('condition', 'under_maintenance')
-                  ->orWhere('condition', 'broken')
-                  ->orWhere('condition', 'repair')
-                  ->orWhere('condition', 'condition_before')
-                  ->orWhere('condition', 'condition_after');
-        })->count();
-        
+        // $maintenance = Maintenance::where(function ($query) {
+        //     $query->where('condition', 'maintenance')
+        //           ->orWhere('condition', 'under_maintenance')
+        //           ->orWhere('condition', 'broken')
+        //           ->orWhere('condition', 'repair')
+        //           ->orWhere('condition', 'condition_before')
+        //           ->orWhere('condition', 'condition_after');
+        // })->count();
+        $maintenance = Maintenance::count();
+
         // Jika masih 0, coba hitung semua record
         if ($maintenance == 0) {
             $maintenance = Maintenance::count();

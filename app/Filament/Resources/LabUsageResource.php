@@ -86,9 +86,11 @@ class LabUsageResource extends Resource
                     ->placeholder("Invalid or deleted user")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
+                    ->placeholder('No Lab Number')
                     ->formatStateUsing(fn ($state) => "Lab {$state}")
                     ->sortable(),
                 Tables\Columns\TextColumn::make('lab_function')
+                    ->placeholder('No Lab Function')
                     ->label('Lab Function')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('end_state')

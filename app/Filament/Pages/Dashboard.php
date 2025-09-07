@@ -9,8 +9,9 @@ use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
-
+    
     use HasTour;
+    protected static ?bool $enable = null;
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?string $activeNavigationIcon = 'heroicon-s-home';
 
@@ -26,8 +27,15 @@ class Dashboard extends BaseDashboard
         ];
     }
 
+
 public function tours(): array
 {
+    $enable = config('filament-tour.enabled', true);
+
+    if (! $enable || $enable === false) {
+        return [];
+    }
+
     return [
         Tour::make('dashboard-tour')
             ->steps(
@@ -88,7 +96,7 @@ public function tours(): array
                     
                 // Step untuk stats overview widget
                 Step::make('.fi-wi-stats-overview')
-                    ->title("📊 Laboratory Statistics Overview")
+                    ->title("📊 Inventory Statistics Overview")
                     ->description('
                         <div class="tour-stats">
                             <p style="
@@ -98,7 +106,7 @@ public function tours(): array
                                 margin-bottom: 12px;
                                 font-weight: 500;
                             ">
-                                Monitor your laboratory inventory at a glance with these key metrics:
+                                Monitor your inventory at a glance with these key metrics:
                             </p>
 
                             <div style="
@@ -112,7 +120,7 @@ public function tours(): array
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                                         <div style="width: 12px; height: 12px; background: #3b82f6; border-radius: 3px;"></div>
                                         <span style="color: #1e40af; font-weight: 600; font-size: 0.9rem;">
-                                            Laboratory Total Stock
+                                            Inventories Total Stock
                                         </span>
                                     </div>
                                     <p style="color: #6b7280; font-size: 0.8rem; margin: 0 0 0 20px;">
@@ -176,7 +184,7 @@ public function tours(): array
                                 line-height: 1.5;
                                 margin-bottom: 10px;
                             ">
-                                These two comprehensive chart widgets track your laboratory management activities and provide insights into usage patterns over the past 12 months.
+                                These two comprehensive chart widgets track your inventory management activities and provide insights into usage patterns over the past 12 months.
                             </p>
                             <div style="
                                 background: #f8fafc;
@@ -309,9 +317,6 @@ public function tours(): array
                             ">
                                 <div style="font-size: 2rem; margin-bottom: 8px;">🚀</div>
                                 <div style="font-weight: 600; margin-bottom: 4px;">Ready to explore!</div>
-                                <div style="font-size: 0.9rem; opacity: 0.9;">
-                                    You can always access help from the menu
-                                </div>
                             </div>
                         </div>
                     ')

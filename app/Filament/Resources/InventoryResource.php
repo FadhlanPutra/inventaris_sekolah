@@ -41,7 +41,7 @@ class InventoryResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('category')
-                    ->label('category')
+                    ->label('Category')
                     ->relationship(name: 'category', titleAttribute: 'name')
                     ->required()
                     ->searchable()
@@ -52,15 +52,15 @@ class InventoryResource extends Resource
                     ->placeholder(1)
                     ->minValue(0),
                 Forms\Components\Select::make('status')
+                    ->label('Borrowable')
+                    ->hint('Can it be borrowed?')
                     ->options([
                         'available' => 'Available',
-                        'in_use' => 'In Use',
-                        'maintenance' => 'Maintenance',
-                        'broken' => 'Broken',
+                        'unavailable' => 'Unavailable',
                     ])
                     ->required()
-                    ->default('available')
-                    ->disabledOn('create'),
+                    ->default('borrowable'),
+                    // ->disabledOn('create'),
                 Forms\Components\Textarea::make('desc')
                     ->columnSpanFull(),
             ]);
@@ -71,16 +71,20 @@ class InventoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('item_name')
+                    ->placeholder('No Item Name')
                     ->label('Item Name')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')
+                    ->placeholder('Invalid or deleted category')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
+                    ->placeholder('No Quantity')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->placeholder('No Status')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('desc')
