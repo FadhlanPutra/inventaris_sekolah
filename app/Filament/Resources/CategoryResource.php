@@ -47,6 +47,7 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->placeholder('No Category Name')
                     ->label('Category Name')
                     ->sortable()
                     ->searchable(),

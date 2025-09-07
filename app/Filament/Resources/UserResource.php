@@ -68,8 +68,10 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->placeholder('No Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->placeholder('No Email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()

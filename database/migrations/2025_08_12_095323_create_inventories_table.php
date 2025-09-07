@@ -16,9 +16,8 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
             $table->string('item_name');
             $table->string('category');
-            $table->enum('condition', ['good', 'damaged', 'repaired'])->default('good');
             $table->integer('quantity')->default(1);
-            $table->enum('status', ['available', 'in_use', 'maintenance', 'broken'])->default('available');
+            $table->enum('status', ['available', 'unavailable'])->default('available');
             $table->text('desc')->nullable();
             $table->timestamps();
         });

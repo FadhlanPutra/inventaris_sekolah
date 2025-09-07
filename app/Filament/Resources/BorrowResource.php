@@ -66,7 +66,11 @@ class BorrowResource extends Resource
                 //     ->nullable(),
                 Forms\Components\Select::make('item_id')
                     ->label('Name Item')
-                    ->relationship(name: 'item', titleAttribute: 'item_name')
+                    ->relationship(
+                        name: 'item',
+                        titleAttribute: 'item_name',
+                        modifyQueryUsing: fn ($query) => $query->where('status', 'available'),
+                    )                    
                     ->required()
                     ->searchable()
                     ->preload(),
@@ -119,6 +123,7 @@ class BorrowResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
+                    ->placeholder('No Borrow Time')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_time')
@@ -126,17 +131,21 @@ class BorrowResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labusage.num_lab')
+                    ->placeholder('Invalid or deleted labusage')
                     ->label('Location')
                     ->formatStateUsing(fn ($state) => "Lab {$state}")
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('item.item_name')
+                    ->placeholder('Invalid or deleted item')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
+                    ->placeholder('No Quantity')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->placeholder('Invalid Status')
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'active',

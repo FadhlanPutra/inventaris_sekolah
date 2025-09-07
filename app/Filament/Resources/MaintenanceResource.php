@@ -65,17 +65,22 @@ class MaintenanceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->description('Select data and click "Bulk Actions" to export to Excel.')
             ->columns([
                 Tables\Columns\TextColumn::make('inventory.item_name')
                     ->label('Item Name')
+                    ->placeholder('Invalid or deleted item')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition')
+                    ->placeholder('No Condition')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('breaking')
+                    ->placeholder('No Damage')
                     ->label('Damage')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition_before')
+                    ->placeholder('No Condition Before')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition_after')
                     ->placeholder('No Condition After')

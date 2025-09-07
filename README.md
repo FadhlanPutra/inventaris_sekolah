@@ -39,6 +39,11 @@ code .
 composer install
 ```
 
+#  Run npm install
+```bash
+npm install
+```
+
 #  Copy .env file
 ```bash
 cp .env.example .env
@@ -73,9 +78,9 @@ php artisan serve
 
 Output success message and login details
 Setup complete! You can now access the application at:
-http://localhost:8000
+http://127.0.0.1:8000
 or
-http://127.0.0.1
+http://localhost:8000
 
 Login using the following credentials:
 
