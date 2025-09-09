@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Borrow;
@@ -84,9 +85,11 @@ class BorrowResource extends Resource
                     ->preload(),
                 Forms\Components\Select::make('labusage_id')
                     ->label('Location')
-                    ->hint('Only shows labs used today')
+                    ->hint('Only shows labs used and active today')
                     ->options(
-                        \App\Models\LabUsage::whereDate('created_at', now()) // hanya yang dibuat hari ini
+                        \App\Models\LabUsage::query()
+                            ->whereDate('created_at', now())       // hanya yang dibuat hari ini
+                            ->where('status', '!=', 'complete')    // exclude yang sudah complete
                             ->pluck('num_lab', 'id')
                             ->map(fn ($num) => "Lab {$num}")
                     )
@@ -133,6 +136,12 @@ class BorrowResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
+                    ->color(fn ($record) =>
+                        $record->status !== 'finished'
+                        && Carbon::parse($record->borrow_time)->lt(now()->subDay())
+                            ? 'danger'
+                            : null
+                    )
                     ->placeholder('No Borrow Time')
                     ->dateTime()
                     ->sortable(),
@@ -194,7 +203,25 @@ class BorrowResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\Action::make('Update Status')
+                    ->action(function ($record) {
+                        $next = match ($record->status) {
+                            'pending' => 'active',
+                            'active'  => 'finished',
+                            default   => $record->status, // kalau sudah finished, biarin
+                        };
+                    
+                        $record->update(['status' => $next]);
+                    })
+                    ->tooltip($next = fn ($record) => match ($record->status) {
+                        'pending' => 'Set to Active',
+                        'active'  => 'Set to Finished',
+                        default   => 'Status is Finished',
+                    })
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-check-circle')            
+                    ->color('success')
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

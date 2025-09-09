@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lab_usages', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->tinyInteger('num_lab');
             $table->enum('class_name', ['X RPL', 'X DKV', 'X TKJ', 'XI RPL', 'XI DKV', 'XI TKJ', 'XII RPL', 'XII DKV', 'XII TKJ'])->nullable();
             $table->tinyInteger('num_students')->nullable();

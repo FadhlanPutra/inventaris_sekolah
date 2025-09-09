@@ -47,11 +47,8 @@ class MaintenanceResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
-                Forms\Components\TextInput::make('condition')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('breaking')
-                    ->label('Damage')
+                Forms\Components\TextInput::make('issue')
+                    ->label('Issue')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('condition_before')
@@ -74,12 +71,9 @@ class MaintenanceResource extends Resource
                     ->placeholder('Invalid or deleted item')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('condition')
-                    ->placeholder('No Condition')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('breaking')
-                    ->placeholder('No Damage')
-                    ->label('Damage')
+                Tables\Columns\TextColumn::make('issue')
+                    ->placeholder('No Issue')
+                    ->label('Issue')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('condition_before')
                     ->placeholder('No Condition Before')
