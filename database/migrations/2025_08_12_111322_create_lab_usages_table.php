@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->tinyInteger('num_lab');
-            $table->string('lab_function');
+            $table->enum('class_name', ['X RPL', 'X DKV', 'X TKJ', 'XI RPL', 'XI DKV', 'XI TKJ', 'XII RPL', 'XII DKV', 'XII TKJ'])->nullable();
+            $table->tinyInteger('num_students')->nullable();
+            $table->enum('status', ['incomplete', 'complete'])->nullable()->default('incomplete');
+            $table->string('lab_function')->nullable();
             $table->string('end_state')->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();

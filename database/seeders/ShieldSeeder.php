@@ -56,7 +56,7 @@ class ShieldSeeder extends Seeder
         "permissions": [
           "view_borrow", "create_borrow", "view_any_borrow",
           "view_inventory", "view_maintenance",
-          "view_lab::usage", "view_any_lab::usage", "create_lab::usage"
+          "view_lab::usage", "view_any_lab::usage", "update_lab::usage"
         ]
       }
     ]

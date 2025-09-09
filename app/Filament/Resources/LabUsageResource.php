@@ -2,16 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LabUsageResource\Pages;
-use App\Filament\Resources\LabUsageResource\RelationManagers;
-use App\Models\LabUsage;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Borrow;
+use App\Models\LabUsage;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DatePicker;
+use App\Filament\Resources\LabUsageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\LabUsageResource\RelationManagers;
 
 
 class LabUsageResource extends Resource
@@ -30,49 +39,78 @@ class LabUsageResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
-        return static::getModel()::count();
+        $query = static::getModel()::query();
+
+        // Kalau bukan super_admin, filter data sesuai user
+        if (!auth()->user()->hasRole('super_admin')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query->count();
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('user_id')
-                    ->default(fn () => auth()->id())
-                    ->dehydrated(true), // ini yang masuk DB
-                Forms\Components\TextInput::make('user_name')
+                Forms\Components\Select::make('user_id')
+                    ->label('User')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->default(auth()->id())
                     ->required()
-                    ->label('Name')
-                    ->dehydrated(false)
-                    ->default(fn () => auth()->user()->name)
-                    ->disabled()
-                    ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
+                    ->disabled(fn (string $context) => $context === 'edit'),
                 Forms\Components\Select::make('num_lab')
                     ->label('Number Lab')
                     ->required()
-                    ->options(function () {
+                    ->options(function ($get, $record) {
                         $all = range(1, 6);
-
-                        // Ambil semua num_lab yang sudah dipakai HARI INI saja
+                    
+                        // Ambil semua num_lab yang sudah dipakai HARI INI
                         $used = LabUsage::whereDate('created_at', now()->toDateString())
                             ->pluck('num_lab')
                             ->toArray();
-
-                        // Hitung lab yang masih tersedia
+                    
+                        // Tambahkan value lama record supaya tetap muncul
+                        if ($record?->num_lab) {
+                            $used = array_diff($used, [$record->num_lab]);
+                        }
+                    
                         $available = array_diff($all, $used);
-
+                    
                         // Tampilkan label "Lab X"
                         return collect($available)
                             ->mapWithKeys(fn ($num) => [$num => "Lab {$num}"])
                             ->toArray();
                     })
                     ->placeholder('Select Lab Number'),
+                Forms\Components\Select::make('class_name')
+                    ->label('Class')
+                    ->options([
+                        'X RPL'  => 'X RPL',
+                        'X DKV'  => 'X DKV',
+                        'X TKJ'  => 'X TKJ',
+                        'XI RPL' => 'XI RPL',
+                        'XI DKV' => 'XI DKV',
+                        'XI TKJ' => 'XI TKJ',
+                        'XII RPL'=> 'XII RPL',
+                        'XII DKV'=> 'XII DKV',
+                        'XII TKJ'=> 'XII TKJ',
+                    ])
+                    ->required(),
+                Forms\Components\TextInput::make('num_students')
+                    ->label('Number of Students')
+                    ->numeric()
+                    ->maxValue(50)
+                    ->nullable(),
                 Forms\Components\TextInput::make('lab_function')
-                    ->required()
+                    ->nullable()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('end_state')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    // ->required(fn (string $context) => $context === 'edit'),
+                    ->nullable(),
                 Forms\Components\TextInput::make('notes')
                     ->columnSpanFull()
             ]);
@@ -84,43 +122,135 @@ class LabUsageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->placeholder("Invalid or deleted user")
+                    // ->formatStateUsing(function ($record) {
+                    //     $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'No Lab';
+                    //     $class = $record->lab_class ?? 'No Class';
+                    //     $numStudents = $record->num_students ?? 'No child';
+                        
+                    //     return "{$labNumber} | {$class} | {$numStudents}";
+                    // })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
-                    ->placeholder('No Lab Number')
-                    ->formatStateUsing(fn ($state) => "Lab {$state}")
-                    ->sortable(),
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn ($record) => $record->status === 'complete' ? 'success' : 'danger')
+                    ->formatStateUsing(function ($record) {
+                        $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'No Lab';
+                        $class = $record->class_name ?? 'No Class';
+                        $numStudents = $record->num_students ? "Students: {$record->num_students}" : 'No child';
+                        $status = ucfirst($record->status ?? 'incomplete');
+
+                        return ("{$status} | {$labNumber} | {$class} | {$numStudents}");
+                    }),
                 Tables\Columns\TextColumn::make('lab_function')
-                    ->placeholder('No Lab Function')
                     ->label('Lab Function')
+                    ->placeholder('Not Filled')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('end_state')
                     ->label('End State')
-                    ->placeholder('No End State')
-                    ->searchable(),
+                    ->searchable()
+                    ->placeholder('Pending'),
                 Tables\Columns\TextColumn::make('notes')
                     ->placeholder('No Notes')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(function ($record) {
+                        return $record->notes;
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Borrowed At')
+                    ->label('Used At')
                     ->dateTime()
                     ->sortable(),
-                    // ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->label('Range')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                Tables\Filters\SelectFilter::make('num_lab')
+                    ->label('Lab Number')
+                    ->options([
+                        1 => 'Lab 1',
+                        2 => 'Lab 2',
+                        3 => 'Lab 3',
+                        4 => 'Lab 4',
+                        5 => 'Lab 5',
+                        6 => 'Lab 6',
+                    ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn () => auth()->user()->hasRole('super_admin')),
+                Action::make('Done')
+                    ->color('success')
+                    ->icon('heroicon-o-check-circle')
+                    ->form([
+                        Select::make('class_name')
+                            ->label('Class')
+                            ->options([
+                                'X RPL'  => 'X RPL',
+                                'X DKV'  => 'X DKV',
+                                'X TKJ'  => 'X TKJ',
+                                'XI RPL' => 'XI RPL',
+                                'XI DKV' => 'XI DKV',
+                                'XI TKJ' => 'XI TKJ',
+                                'XII RPL'=> 'XII RPL',
+                                'XII DKV'=> 'XII DKV',
+                                'XII TKJ'=> 'XII TKJ',
+                            ])
+                            ->default(fn ($record) => $record->class_name)
+                            ->required(),
+                            
+                        TextInput::make('num_students')
+                            ->label('Number of students')
+                            ->numeric()
+                            ->default(fn ($record) => $record->num_students)
+                            ->required(),
+                            
+                        TextInput::make('lab_function')
+                            ->label('Lab Function')
+                            ->default(fn ($record) => $record->lab_function)
+                            ->required(),
+                            
+                        TextInput::make('end_state')
+                            ->label('End State')
+                            ->default(fn ($record) => $record->end_state)
+                            ->required(),
+                            
+                        Textarea::make('notes')
+                            ->label('Notes')
+                            ->default(fn ($record) => $record->notes)
+                            ->nullable(),
+                    ])
+                    ->action(function (array $data, LabUsage $record): void {
+                        $record->update($data);
+                    })
+                    ->visible(fn (LabUsage $record) => 
+                        auth()->user()->hasRole('super_admin') || $record->status === 'incomplete'
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
@@ -152,4 +282,3 @@ class LabUsageResource extends Resource
         return $query->where('user_id', auth()->id());
     }
 }
-

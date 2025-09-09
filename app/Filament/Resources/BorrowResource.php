@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use App\Models\Inventory;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BorrowResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -34,8 +36,14 @@ class BorrowResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
-        return static::getModel()::count();
+        $query = static::getModel()::query();
+        
+        // Kalau bukan super_admin, filter data sesuai user
+        if (!auth()->user()->hasRole('super_admin')) {
+            $query->where('user_id', auth()->id());
+        }
+    
+        return $query->count();
     }
 
     // 6. Warna badge kondisional
@@ -76,8 +84,10 @@ class BorrowResource extends Resource
                     ->preload(),
                 Forms\Components\Select::make('labusage_id')
                     ->label('Location')
+                    ->hint('Only shows labs used today')
                     ->options(
-                        \App\Models\LabUsage::pluck('num_lab', 'id')
+                        \App\Models\LabUsage::whereDate('created_at', now()) // hanya yang dibuat hari ini
+                            ->pluck('num_lab', 'id')
                             ->map(fn ($num) => "Lab {$num}")
                     )
                     ->required()
@@ -146,11 +156,13 @@ class BorrowResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->placeholder('Invalid Status')
+                    ->badge()
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'active',
                         'primary'    => 'finished',
                     ])
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -162,7 +174,23 @@ class BorrowResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->label('Range')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

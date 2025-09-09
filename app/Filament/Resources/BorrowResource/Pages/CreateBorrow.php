@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\BorrowResource\Pages;
 
-use App\Filament\Resources\BorrowResource;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Notifications\Notification;
 use App\Models\User;
-use Filament\Notifications\Actions\Action;
+use Filament\Actions;
 use App\Models\Borrow;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\BorrowResource;
+use Filament\Notifications\Actions\Action;
 
 class CreateBorrow extends CreateRecord
 {
@@ -23,9 +23,9 @@ class CreateBorrow extends CreateRecord
         $borrow = $this->record;
 
         Notification::make()
-            ->title('Ada yang meminjam barang!')
+            ->title('Someone borrowed an item!')
             ->info()
-            ->body("Barang {$itemName} dipinjam oleh " . auth()->user()->name)
+            ->body("Item {$itemName} borrowed by " . auth()->user()->name)
             ->actions([
                 Action::make('view')
                 ->button()

@@ -118,6 +118,8 @@ class DummyData extends Seeder
             [
                 'user_id' => 1,
                 'num_lab' => 2,
+                'class_name' => 'X RPL',
+                'num_children' => 25,
                 'lab_function' => 'Computer Programming Class',
                 'end_state' => 'All PCs working fine',
                 'notes' => 'Used for final project practice',
@@ -127,6 +129,8 @@ class DummyData extends Seeder
             [
                 'user_id' => 1,
                 'num_lab' => 3,
+                'class_name' => 'X RPL',
+                'num_children' => 25,
                 'lab_function' => 'Electronics Workshop',
                 'end_state' => '2 kits damaged',
                 'notes' => 'Overloaded Arduino boards',
@@ -136,6 +140,8 @@ class DummyData extends Seeder
             [
                 'user_id' => 1,
                 'num_lab' => 1,
+                'class_name' => 'X RPL',
+                'num_children' => 25,
                 'lab_function' => 'Networking Practice',
                 'end_state' => 'Switch rebooted',
                 'notes' => null,
