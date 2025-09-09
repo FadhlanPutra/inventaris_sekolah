@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a07a2c4d24e93990239d22f2e7c6844",
+    "content-hash": "fc2f845e1cec3b430c71e94ebf226b0d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1231,6 +1231,80 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "eightynine/filament-excel-import",
+            "version": "v3.1.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eighty9nine/filament-excel-import.git",
+                "reference": "a8167515d8f6a946a96774ad8e93ad1f10b43f31"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eighty9nine/filament-excel-import/zipball/a8167515d8f6a946a96774ad8e93ad1f10b43f31",
+                "reference": "a8167515d8f6a946a96774ad8e93ad1f10b43f31",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "illuminate/contracts": "^10.0|^11.0|^12.0",
+                "maatwebsite/excel": "^3.1",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9|^8.1",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^8.0|^10.0",
+                "pestphp/pest": "^2.0|^3.7",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
+                "phpstan/phpstan-phpunit": "^1.0|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "ExcelImportAction": "EightyNine\\ExcelImport\\Facades\\ExcelImportAction"
+                    },
+                    "providers": [
+                        "EightyNine\\ExcelImport\\ExcelImportServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EightyNine\\ExcelImport\\": "src/",
+                    "EightyNine\\ExcelImport\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eighty Nine",
+                    "email": "eighty9nine@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Import Excel files with Laravel Filament.",
+            "homepage": "https://github.com/eightynine/filament-excel-import",
+            "keywords": [
+                "eightynine",
+                "filament-excel-import",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/eightynine/filament-excel-import/issues",
+                "source": "https://github.com/eightynine/filament-excel-import"
+            },
+            "time": "2025-06-20T06:08:41+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -5660,16 +5734,16 @@
         },
         {
             "name": "pxlrbt/filament-excel",
-            "version": "v2.4.3",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pxlrbt/filament-excel.git",
-                "reference": "3425500cfede8a9334a6a79f001b5a36a117ca6f"
+                "reference": "98938cce4e9b6fc6705068cb08f7624c526a6789"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pxlrbt/filament-excel/zipball/3425500cfede8a9334a6a79f001b5a36a117ca6f",
-                "reference": "3425500cfede8a9334a6a79f001b5a36a117ca6f",
+                "url": "https://api.github.com/repos/pxlrbt/filament-excel/zipball/98938cce4e9b6fc6705068cb08f7624c526a6789",
+                "reference": "98938cce4e9b6fc6705068cb08f7624c526a6789",
                 "shasum": ""
             },
             "require": {
@@ -5715,7 +5789,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pxlrbt/filament-excel/issues",
-                "source": "https://github.com/pxlrbt/filament-excel/tree/v2.4.3"
+                "source": "https://github.com/pxlrbt/filament-excel/tree/v2.0.0"
             },
             "funding": [
                 {
@@ -5723,7 +5797,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-22T02:12:15+00:00"
+            "time": "2023-08-07T10:52:27+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -12300,12 +12374,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
