@@ -59,7 +59,7 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
-#  Then, press 0 and enter
+#  Select option 0 and enter
 ```bash
   Which panel do you want to generate permissions/policies for?
   dashboard .............. 0
