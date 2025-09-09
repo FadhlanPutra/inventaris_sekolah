@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\Filter;
+use EightyNine\ExcelImport\ExcelImportAction;
+use Filament\Actions;
+
 
 class InventoryResource extends Resource
 {
@@ -27,6 +30,15 @@ class InventoryResource extends Resource
 
     // 3. Posisi di menu (urutan)
     protected static ?int $navigationSort = 2; // angka kecil = lebih depan
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            ExcelImportAction::make()
+                ->color('primary'),
+            Actions\CreateAction::make(),
+        ];
+    }
 
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
@@ -147,4 +159,6 @@ class InventoryResource extends Resource
             'edit' => Pages\EditInventory::route('/{record}/edit'),
         ];
     }
+
+    
 }
