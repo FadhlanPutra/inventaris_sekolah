@@ -25,6 +25,8 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use JibayMcs\FilamentTour\FilamentTourPlugin;
+use Filament\Navigation\NavigationItem;
+use Filament\Notifications\Livewire\Notifications;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -88,6 +90,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->spa()
             ->unsavedChangesAlerts()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('20s')
             ->plugins([
                 FilamentShieldPlugin::make(),
                 FilamentTourPlugin::make(),
