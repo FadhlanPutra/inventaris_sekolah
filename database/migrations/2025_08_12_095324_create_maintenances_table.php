@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('inventory_id')->nullable()->constrained('inventories')->onDelete('set null');
-            $table->string('condition');
-            $table->string('breaking');
+            $table->string('issue');
             $table->string('condition_before');
             $table->string('condition_after')->nullable();
             $table->string('add_notes')->nullable();

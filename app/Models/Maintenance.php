@@ -13,7 +13,7 @@ class Maintenance extends Model
         '/dashboard',
         '/dashboard/maintenances',
     ];
-    protected $fillable = ['inventory_id', 'item_name', 'condition', 'breaking', 'condition_before', 'condition_after', 'add_notes'];
+    protected $fillable = ['inventory_id', 'item_name', 'issue', 'condition_before', 'condition_after', 'add_notes'];
 
     public function inventory(): BelongsTo
     {

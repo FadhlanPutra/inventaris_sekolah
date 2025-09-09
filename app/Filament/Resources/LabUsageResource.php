@@ -55,8 +55,14 @@ class LabUsageResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'name')
+                    ->label('Teacher Name')
+                        ->relationship(
+                            name: 'user',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn ($query) => $query->whereHas('roles', function ($q) {
+                                $q->whereIn('name', ['super_admin', 'guru']);
+                            })
+                        )
                     ->searchable()
                     ->preload()
                     ->default(auth()->id())
@@ -122,6 +128,7 @@ class LabUsageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label('Teacher')
                     ->placeholder("Invalid or deleted user")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')

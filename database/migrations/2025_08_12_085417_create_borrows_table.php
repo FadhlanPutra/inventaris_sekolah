@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('borrows', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('item_id');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('item_id')->nullable()->constrained('inventories')->onDelete('set null');
             $table->dateTime('borrow_time');
             $table->dateTime('return_time')->nullable();
             $table->tinyInteger('labusage_id');

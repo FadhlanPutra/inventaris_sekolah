@@ -62,7 +62,7 @@ public function tours(): array
                                 margin-top: 8px;
                                 box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
                             ">
-                                💡 Press any key or click outside to skip
+                                💡 Press esc key or click outside to skip
                             </div>
                         </div>
                     '),
@@ -93,6 +93,104 @@ public function tours(): array
                     ')
                     ->icon('heroicon-o-user-circle')
                     ->iconColor('success'),
+
+                // Step untuk Notifications
+                Step::make('.fi-topbar-database-notifications-btn')
+                    ->title("🔔 Notifications Center")
+                    ->description('
+                        <div class="tour-notifications">
+                            <p style="
+                                color: #374151;
+                                font-size: 1rem;
+                                line-height: 1.5;
+                                margin-bottom: 12px;
+                                font-weight: 500;
+                            ">
+                                Stay updated with real-time notifications about your inventory system:
+                            </p>
+                            
+                            <div style="
+                                background: #f8fafc;
+                                border: 1px solid #e2e8f0;
+                                border-radius: 8px;
+                                padding: 12px;
+                                margin: 12px 0;
+                            ">
+                                <div style="margin-bottom: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <div style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></div>
+                                        <span style="color: #dc2626; font-weight: 600; font-size: 0.9rem;">
+                                            Low Stock Alerts
+                                        </span>
+                                    </div>
+                                    <p style="color: #6b7280; font-size: 0.8rem; margin: 0 0 8px 16px;">
+                                        Get notified when inventory levels are running low
+                                    </p>
+                                </div>
+
+                                <div style="margin-bottom: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <div style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%;"></div>
+                                        <span style="color: #d97706; font-weight: 600; font-size: 0.9rem;">
+                                            Return Reminders
+                                        </span>
+                                    </div>
+                                    <p style="color: #6b7280; font-size: 0.8rem; margin: 0 0 8px 16px;">
+                                        Automatic reminders for overdue borrowed items
+                                    </p>
+                                </div>
+
+                                <div style="margin-bottom: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%;"></div>
+                                        <span style="color: #2563eb; font-weight: 600; font-size: 0.9rem;">
+                                            Lab Booking Updates
+                                        </span>
+                                    </div>
+                                    <p style="color: #6b7280; font-size: 0.8rem; margin: 0 0 8px 16px;">
+                                        Notifications about lab reservations and scheduling
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div style="
+                                background: #fef3c7;
+                                border: 1px solid #fbbf24;
+                                border-radius: 6px;
+                                padding: 8px;
+                                margin-top: 12px;
+                                font-size: 0.8rem;
+                                color: #92400e;
+                            ">
+                                <div style="font-weight: 600; margin-bottom: 2px;">
+                                    💡 Notification Features:
+                                </div>
+                                <div style="font-size: 0.75rem;">
+                                    • Click the bell icon to view all notifications<br>
+                                    • Mark notifications as read/unread<br>
+                                </div>
+                            </div>
+
+                            <div style="
+                                background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+                                color: white;
+                                padding: 10px;
+                                border-radius: 6px;
+                                margin-top: 12px;
+                                text-align: center;
+                            ">
+                                <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 2px;">
+                                    🔔 Stay Informed
+                                </div>
+                                <div style="font-size: 0.75rem; opacity: 0.9;">
+                                    Never miss important updates about your inventory management
+                                </div>
+                            </div>
+                        </div>
+                    ')
+                    ->icon('heroicon-o-bell')
+                    ->iconColor('warning'),
                     
                 // Step untuk stats overview widget
                 Step::make('.fi-wi-stats-overview')
@@ -206,7 +304,7 @@ public function tours(): array
                                         border-radius: 50%;
                                     "></div>
                                     <span style="color: #1e40af; font-weight: 600; font-size: 0.9rem;">
-                                        Lab Usage Statistics - Peminjaman Lab per Bulan
+                                        Lab Usage Statistics - Monthly Lab Usage
                                     </span>
                                 </div>
                                 <div style="
@@ -221,7 +319,7 @@ public function tours(): array
                                         border-radius: 50%;
                                     "></div>
                                     <span style="color: #15803d; font-weight: 600; font-size: 0.9rem;">
-                                        Borrowed Items Statistics - Peminjaman Barang per Bulan
+                                        Borrowed Items Statistics - Monthly Item Borrowing
                                     </span>
                                 </div>
                             </div>
