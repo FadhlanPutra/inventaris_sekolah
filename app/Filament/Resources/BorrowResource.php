@@ -189,4 +189,17 @@ class BorrowResource extends Resource
             'edit' => Pages\EditBorrow::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Kalau admin → tampilkan semua
+        if (auth()->user()->hasRole('super_admin')) {
+            return $query;
+        }
+
+        // Kalau bukan admin → tampilkan data user itu sendiri
+        return $query->where('user_id', auth()->id());
+    }
 }

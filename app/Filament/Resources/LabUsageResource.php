@@ -139,7 +139,7 @@ class LabUsageResource extends Resource
         ];
     }
 
-        public static function getEloquentQuery(): Builder
+    public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
 
