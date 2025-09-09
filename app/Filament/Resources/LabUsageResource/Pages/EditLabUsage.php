@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\LabUsageResource\Pages;
 
-use App\Filament\Resources\LabUsageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\LabUsageResource;
 
 class EditLabUsage extends EditRecord
 {

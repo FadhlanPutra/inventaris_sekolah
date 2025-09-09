@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\BorrowResource\Pages;
 
-use App\Filament\Resources\BorrowResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\BorrowResource;
 
 class EditBorrow extends EditRecord
 {
