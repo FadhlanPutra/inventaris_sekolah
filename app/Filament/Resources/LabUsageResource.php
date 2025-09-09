@@ -9,14 +9,15 @@ use App\Models\LabUsage;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\LabUsageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -122,13 +123,6 @@ class LabUsageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->placeholder("Invalid or deleted user")
-                    // ->formatStateUsing(function ($record) {
-                    //     $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'No Lab';
-                    //     $class = $record->lab_class ?? 'No Class';
-                    //     $numStudents = $record->num_students ?? 'No child';
-                        
-                    //     return "{$labNumber} | {$class} | {$numStudents}";
-                    // })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('num_lab')
                     ->label('Status')
@@ -248,6 +242,15 @@ class LabUsageResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->exports([
+                            ExcelExport::make('table')
+                                ->fromTable()
+                                ->withFilename(fn ($resource, $livewire, $model) =>
+                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
+                                ),
+                        ]),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

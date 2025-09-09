@@ -2,20 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MaintenanceResource\Pages;
-use App\Filament\Resources\MaintenanceResource\RelationManagers;
-use App\Models\Maintenance;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Maintenance;
+use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\MaintenanceResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\MaintenanceResource\RelationManagers;
 
 class MaintenanceResource extends Resource
 {
@@ -67,7 +67,7 @@ class MaintenanceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->description('Select data and click "Bulk Actions" to export to Excel.')
+        ->description(auth()->user()->hasRole('super_admin') ? 'Select data and click "Bulk Actions" to export to Excel.' : null)
             ->columns([
                 Tables\Columns\TextColumn::make('inventory.item_name')
                     ->label('Item Name')
@@ -128,6 +128,7 @@ class MaintenanceResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
+                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
                         ->exports([
                             ExcelExport::make('table')
                                 ->fromTable()

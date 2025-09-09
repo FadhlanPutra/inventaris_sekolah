@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\InventoryResource\Pages;
 
-use App\Filament\Resources\InventoryResource;
-use App\Models\Inventory;
 use Filament\Actions;
+use App\Models\Inventory;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\InventoryResource;
 use EightyNine\ExcelImport\ExcelImportAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Actions\Pages\ExportAction as ExcelExportAction;

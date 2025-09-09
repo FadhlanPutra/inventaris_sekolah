@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\MaintenanceResource\Pages;
 
-use App\Filament\Resources\MaintenanceResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\MaintenanceResource;
 
 class CreateMaintenance extends CreateRecord
 {

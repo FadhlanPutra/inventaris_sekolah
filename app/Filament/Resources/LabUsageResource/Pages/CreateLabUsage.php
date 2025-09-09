@@ -30,11 +30,6 @@ class CreateLabUsage extends CreateRecord
                 ->button()
                 ->markAsRead()
                 ->url(LabUsageResource::getUrl('edit', ['record' => $borrow])),
-                // Action::make('approve')
-                //     ->button()
-                //     ->action(function () use ($borrow) {
-                //         Borrow::find($borrow->id)?->update(['status' => 'active']);
-                //     }), // kalau mau coba pake livewire, tapi malas pake dispatch()
                 ])
             ->sendToDatabase($superAdmins);
     }

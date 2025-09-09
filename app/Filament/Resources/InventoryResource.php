@@ -2,20 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InventoryResource\Pages;
-use App\Filament\Resources\InventoryResource\RelationManagers;
-use App\Models\Inventory;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Filters\Filter;
-use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions;
+use Filament\Forms\Form;
+use App\Models\Inventory;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use EightyNine\ExcelImport\ExcelImportAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use App\Filament\Resources\InventoryResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\InventoryResource\RelationManagers;
 
 
 class InventoryResource extends Resource
@@ -140,6 +142,15 @@ class InventoryResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->exports([
+                            ExcelExport::make('table')
+                                ->fromTable()
+                                ->withFilename(fn ($resource, $livewire, $model) =>
+                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
+                                ),
+                        ]),
                 ]),
             ]);
     }
