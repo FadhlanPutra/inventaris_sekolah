@@ -13,7 +13,6 @@ Route::get('/', function () {
     return redirect()->route('filament.dashboard.pages.dashboard');
 })->name('home');
 
-
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])
 //     ->name('dashboard');
