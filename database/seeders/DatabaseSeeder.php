@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
         }
         
         $this->call([
-            ShieldSeeder::class,
             GenerateSeeder::class,
+            ShieldSeeder::class,
             // DummyData::class,
         ]);
     }

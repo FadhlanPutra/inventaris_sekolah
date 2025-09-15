@@ -11,8 +11,11 @@ use App\Models\Inventory;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Notifications\Actions\Action;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\BorrowResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -62,13 +65,20 @@ class BorrowResource extends Resource
             ->schema([
                 Forms\Components\Hidden::make('user_id')
                     ->default(fn () => auth()->id())
-                    ->dehydrated(true), // ini yang masuk DB
+                    ->dehydrated(fn () => ! auth()->user()->hasRole('super_admin')),
                 Forms\Components\TextInput::make('user_name')
                     ->label('Name')
                     ->default(fn () => auth()->user()->name)
                     ->disabled()
-                    ->dehydrated(false) // tidak masuk DB
-                    ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name),
+                    ->dehydrated(false)
+                    ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name)
+                    ->visible(fn () => ! auth()->user()->hasRole('super_admin')),
+                Forms\Components\Select::make('user_id')
+                    ->label('Select User')
+                    ->relationship('user', 'name') // pastikan ada relasi `user()`
+                    ->searchable()
+                    ->preload()
+                    ->visible(fn () => auth()->user()->hasRole('super_admin')),                  
                 Forms\Components\DateTimePicker::make('borrow_time')
                     ->required()
                     ->readOnly()
@@ -107,7 +117,7 @@ class BorrowResource extends Resource
                             if ($inventoryId) {
                                 $inventory = Inventory::find($inventoryId);
                                 if ($inventory && $value > $inventory->quantity) {
-                                    $fail("Jumlah peminjaman tidak boleh lebih dari stok ({$inventory->quantity}).");
+                                    $fail("Borrowed quantity cannot exceed available stock. ({$inventory->quantity}).");
                                 }
                             }
                         },
@@ -202,25 +212,50 @@ class BorrowResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('Update Status')
-                    ->action(function ($record) {
-                        $next = match ($record->status) {
-                            'pending' => 'active',
-                            'active'  => 'finished',
-                            default   => $record->status, // kalau sudah finished, biarin
-                        };
-                    
-                        $record->update(['status' => $next]);
-                    })
-                    ->tooltip($next = fn ($record) => match ($record->status) {
-                        'pending' => 'Set to Active',
-                        'active'  => 'Set to Finished',
-                        default   => 'Status is Finished',
-                    })
-                    ->requiresConfirmation()
-                    ->icon('heroicon-o-check-circle')            
-                    ->color('success')
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('Update Status')
+                        ->action(function ($record) {
+                            $next = match ($record->status) {
+                                'pending' => 'active',
+                                'active'  => 'finished',
+                                default   => $record->status, // kalau sudah finished, biarin
+                            };
+                        
+                            $record->update(['status' => $next]);
+                        
+                            // === Kirim notifikasi ke user yang pinjam ===
+                            $status = ucfirst($record->status);
+                            $itemName = $record->item?->item_name;
+                            $user = $record->user;
+                        
+                            Notification::make()
+                                ->title('Borrow status updated!')
+                                ->success()
+                                ->body("Status borrow <strong>{$itemName}</strong> now: <span style='color: green;'>{$status}</span>")
+                                ->actions([
+                                    Action::make('view')
+                                        ->button()
+                                        ->markAsRead()
+                                        ->url(BorrowResource::getUrl('index', ['record' => $record])),
+                                ])
+                                ->sendToDatabase($user);
+                        })
+                        ->tooltip(fn ($record) => match ($record->status) {
+                            'pending' => 'Set to Active',
+                            'active'  => 'Set to Finished',
+                            default   => 'Status is Finished',
+                        })
+                        ->requiresConfirmation()
+                        ->visible(fn (Borrow $record) => 
+                            auth()->user()->hasRole('super_admin')
+                        )
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success'),
+                    Tables\Actions\DeleteAction::make(),
+                    ])
+                    ->button()
+                    ->label('Actions')
                 ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

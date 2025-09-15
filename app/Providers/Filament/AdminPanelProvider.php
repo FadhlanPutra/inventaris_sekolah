@@ -27,6 +27,7 @@ use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use JibayMcs\FilamentTour\FilamentTourPlugin;
 use Filament\Navigation\NavigationItem;
 use Filament\Notifications\Livewire\Notifications;
+use App\Filament\Pages\Auth\EmailVerificationPromptCustom;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -41,7 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('100px')
             ->default()
             ->registration()
-            ->emailVerification()
+            ->emailVerification(EmailVerificationPromptCustom::class)
             ->passwordReset()
             ->login()
             ->colors([

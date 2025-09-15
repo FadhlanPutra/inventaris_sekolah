@@ -50,6 +50,7 @@ class ListBorrows extends ListRecords
         ->icon('heroicon-o-arrow-down-tray')
         ->color('primary')  // tombol utama biru
         ->button()
+        ->visible(auth()->user()->can('export_borrow'))
         ->outlined(false),
             Actions\CreateAction::make(),
         ];
@@ -57,10 +58,10 @@ class ListBorrows extends ListRecords
 
     public function getTabs(): array
     {
-        // hanya super_admin yang bisa lihat tabs
-        if (! auth()->user()?->hasRole('super_admin')) {
-            return [];
-        }
+        // // hanya super_admin yang bisa lihat tabs
+        // if (! auth()->user()?->hasRole('super_admin')) {
+        //     return [];
+        // }
 
         return [
             'All' => Tab::make()
@@ -76,8 +77,8 @@ class ListBorrows extends ListRecords
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'active')),
 
             'Finished' => Tab::make()
-                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'finish')->count())
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'finish')),
+                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'finished')->count())
+                ->modifyQueryUsing(fn ($query) => $query->where('status', 'finished')),
         ];
     }
 }

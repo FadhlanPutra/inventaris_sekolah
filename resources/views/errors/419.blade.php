@@ -106,7 +106,7 @@
                 if (confirm("This page has expired. \nWould you like to be redirected to the login page?")) {
                     window.location.href = '/dashboard/login';
                 } else {
-                    setTimeout(askRedirect, 30);
+                    setTimeout(askRedirect, 50);
                 }
             }
             setTimeout(askRedirect, 50);

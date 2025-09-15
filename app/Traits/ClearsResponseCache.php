@@ -5,45 +5,47 @@ namespace App\Traits;
 use Spatie\ResponseCache\Facades\ResponseCache;
 
 /**
- * Trait ini mengandalkan properti static $cacheClearUrls di model yang memakainya.
+ * Trait ini menghapus cache untuk URL tertentu setiap kali model berubah.
  *
- * @property static array $cacheClearUrls
+ * Properti statis $cacheClearUrls harus didefinisikan di model yang menggunakan trait ini:
+ *
+ * protected static array $cacheClearUrls = [
+ *     '/homepage',
+ *     '/products',
+ * ];
  */
-
-
 trait ClearsResponseCache
 {
-    // protected static array $cacheClearUrls = []; // default kosong biar nggak error
-    public static function bootClearsResponseCache()
+    /**
+     * Boot trait untuk mengikat event Eloquent.
+     */
+    public static function bootClearsResponseCache(): void
     {
-        // static::saved(fn() => ResponseCache::clear());
-        // static::deleted(fn() => ResponseCache::clear());
-
-        // static::created(fn() => ResponseCache::clear());
-        // static::updated(fn() => ResponseCache::clear());
-        // static::deleted(fn() => ResponseCache::clear());
-
+        // Clear cache saat model disimpan (create/update)
         static::saved(function ($model) {
-            if ($model->wasChanged()) {
-                $model->clearCacheForUrls();
-            }
+            $model->clearCacheForUrls();
         });
 
+        // Clear cache saat model dihapus
         static::deleted(function ($model) {
             $model->clearCacheForUrls();
         });
     }
 
-    protected function clearCacheForUrls()
+    /**
+     * Hapus cache untuk URL yang ditentukan di $cacheClearUrls
+     */
+    protected function clearCacheForUrls(): void
     {
-        if (!property_exists($this, 'cacheClearUrls')) {
+        if (!isset(static::$cacheClearUrls) || !is_array(static::$cacheClearUrls)) {
+            // Tidak ada URL yang didefinisikan, langsung return
             return;
         }
 
-        // Kalau $cacheClearUrls nya merah itu emang intelephense nya. biarin aja gak bakal ngebug (katanya). tapi kalau ngebug ya benerin 😁
-        // "Akan muncul garis merah di $cacheClearUrls karena sifat trait yang memanggil properti dari luar (model)." ~AI
         foreach (static::$cacheClearUrls as $url) {
-            ResponseCache::forget($url);
+            if (!empty($url) && is_string($url)) {
+                ResponseCache::forget($url);
+            }
         }
     }
 }
