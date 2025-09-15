@@ -74,6 +74,11 @@ php artisan storage:link
 npm run dev
 ``` -->
 
+# Run Email Verification and notification
+```bash
+php artisan queue:work
+```
+
 #  Start the Laravel development server
 ```bash
 php artisan serve
@@ -91,24 +96,3 @@ Login using the following credentials:
 Email: admin@gmail.com
 Password: admin123
 ```
-
-Run Email Verification and notification
-```bash
-php artisan queue:work
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

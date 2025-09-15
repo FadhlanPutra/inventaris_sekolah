@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
@@ -105,6 +106,46 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+
+                Tables\Actions\Action::make('updateRole')
+                    ->label('Update Role')
+                    ->form([
+                        Forms\Components\Select::make('role')
+                            ->label('Role')
+                            ->options([
+                                'super_admin' => 'Super Admin',
+                                'guru'        => 'Guru',
+                                'siswa'       => 'Siswa',
+                            ])
+                            ->required(),
+                    ])
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (User $record) => 'Update Role for "'.$record->name.'"')
+                    ->modalDescription(fn (User $record) => 'Are you sure you want to do this for user "'.$record->email.'"?')
+                    ->action(function (User $record, array $data): void {
+                        // sync role ke user
+                        $record->syncRoles([$data['role']]);
+                    })
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('warning'),
+
+                Tables\Actions\Action::make('resendVerification')
+                    ->label('Resend verification email')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (User $record) => 'Resend verification for "'.$record->name.'"')
+                    ->modalDescription(fn (User $record) => 'An email will be sent to '.$record->email)
+                    ->action(function (User $record): void {
+                        $record->sendEmailVerificationNotification();
+                    
+                        Notification::make()
+                            ->title('The verification email was sent successfully')
+                            ->body('Email sent to '.$record->email)
+                            ->success()
+                            ->send();
+                    })
+                    ->icon('heroicon-o-envelope')
+                    ->visible(fn (User $record): bool => is_null($record->email_verified_at))
+                    ->color('success'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

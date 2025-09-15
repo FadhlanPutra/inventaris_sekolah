@@ -67,7 +67,7 @@ class ShieldSeeder extends Seeder
             "guard_name": "web",
             "permissions": [
               "view_borrow", "create_borrow", "view_any_borrow",
-              "view_any_inventory", "view_any_maintenance",
+              "view_any_inventory",
               "view_lab::usage", "view_any_lab::usage", "update_lab::usage"
             ]
           },
@@ -76,7 +76,7 @@ class ShieldSeeder extends Seeder
             "guard_name": "web",
             "permissions": [
               "view_borrow", "create_borrow", "view_any_borrow",
-              "view_any_inventory", "view_any_maintenance"
+              "view_any_inventory"
             ]
           }
         ]';

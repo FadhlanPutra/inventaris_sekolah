@@ -19,19 +19,29 @@ class StatsOverview extends BaseWidget
                 ->description('Press for details')
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('primary')
-                ->url(route('filament.dashboard.resources.inventories.index')),
-
+                ->url(
+                    auth()->user()->can('view_any_inventory') 
+                        ? route('filament.dashboard.resources.inventories.index') 
+                        : null
+                ),
             Stat::make('Borrowed Items', $this->getBarangDipinjam())
                 ->description('Press for Details')
                 ->descriptionIcon('heroicon-m-clipboard-document-list')
                 ->color('warning')
-                ->url(route('filament.dashboard.resources.borrows.index')),
-
+                ->url(
+                    auth()->user()->can('view_any_borrow') 
+                        ? route('filament.dashboard.resources.borrows.index') 
+                        : null
+                ),
             Stat::make('Items Under Maintenance', $this->getMaintenance())
                 ->description('Press for Details')
                 ->descriptionIcon('heroicon-m-wrench')
                 ->color('success')
-                ->url(route('filament.dashboard.resources.maintenances.index')),
+                ->url(
+                    auth()->user()->can('view_any_maintenance') 
+                        ? route('filament.dashboard.resources.maintenances.index') 
+                        : null
+                ),
         ];
     }
 

@@ -11,7 +11,7 @@
 
     {{-- Tombol khusus “Not received email? Resend” --}}
     <div class="flex flex-row items-center justify-center gap-2 text-sm">
-        <p class="text-gray-500">Not re ceived email?</p>
+        <p class="text-gray-500">Not received email?</p>
         <button wire:click="resend" class="filament-button filament-button-primary">
             {{ __('Resend') }}
         </button>

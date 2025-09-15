@@ -40,13 +40,9 @@ class WarmPageCache extends Command
             route('filament.dashboard.resources.shield.roles.create'),
             route('filament.dashboard.resources.users.create'),
             
-            route('password.request'),
             route('filament.dashboard.pages.themes'),
             route('filament.dashboard.pages.edit-profile'),
 
-            // url('flux/editor.css'),
-            // url('flux/editor.js'),
-            // url('flux/editor.min.js'),
             url('flux/flux.js'),
             url('flux/flux.min.js'),
             url('livewire/livewire.js'),
@@ -64,13 +60,19 @@ class WarmPageCache extends Command
         $responses = Http::pool(fn ($pool) =>
             array_map(fn ($url) => $pool->get($url), $urls)
         );
-
+            
         foreach ($urls as $i => $url) {
             $response = $responses[$i];
-            if ($response->successful()) {
-                $this->info("Cache warmed for: {$url}");
+        
+            if ($response instanceof \Illuminate\Http\Client\Response) {
+                if ($response->successful()) {
+                    $this->info("Cache warmed for: {$url}");
+                } else {
+                    $this->error("Gagal warming: {$url} | Status: {$response->status()}");
+                }
             } else {
-                $this->error("Gagal warming: {$url} | Status: {$response->status()}");
+                // Kalau gagal total (ConnectionException, dll)
+                $this->error("Gagal warming: {$url} | Connection error");
             }
         }
 
