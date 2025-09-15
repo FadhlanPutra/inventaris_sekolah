@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\ClearsResponseCache;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
+use App\Filament\Resources\LabUsageResource;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LabUsage extends Model
@@ -32,6 +35,27 @@ class LabUsage extends Model
 
             // Update status otomatis
             $labUsage->status = $allFilled ? 'complete' : 'incomplete';
+        });
+
+        static::updated(function ($labUsage) {
+            // Kalau status berubah dan sekarang complete → kirim notifikasi ke user
+            if ($labUsage->isDirty('status') && $labUsage->status === 'complete') {
+                $user = $labUsage->user;
+
+                if ($user) {
+                    Notification::make()
+                        ->title('Lab Usage Completed')
+                        ->success()
+                        ->body("Your lab usage in <strong>Lab {$labUsage->num_lab}</strong> has been marked as <span style='color:green;'>Complete</span>.")
+                        ->actions([
+                            Action::make('view')
+                                ->button()
+                                ->markAsRead()
+                                ->url(LabUsageResource::getUrl('index')),
+                        ])
+                        ->sendToDatabase($user);
+                }
+            }
         });
     }
 }

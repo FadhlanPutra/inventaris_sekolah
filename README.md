@@ -54,22 +54,25 @@ cp .env.example .env
 php artisan key:generate
 ```
 
+#  Build assets (JS & CSS)
+```bash
+npm run build
+```
+
 #  Run database migrations and seed data
 ```bash
 php artisan migrate --seed
 ```
 
-#  Select option 0 and enter
+#  Run storage link
 ```bash
-  Which panel do you want to generate permissions/policies for?
-  dashboard .............. 0
-  > 0
+php artisan storage:link
 ```
 
-#  Compile frontend assets
+<!-- #  Compile frontend assets
 ```bash
 npm run dev
-```
+``` -->
 
 #  Start the Laravel development server
 ```bash
@@ -89,7 +92,7 @@ Email: admin@gmail.com
 Password: admin123
 ```
 
-Run Email Verification
+Run Email Verification and notification
 ```bash
 php artisan queue:work
 ```

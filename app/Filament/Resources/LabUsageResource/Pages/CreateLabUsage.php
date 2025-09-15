@@ -16,21 +16,23 @@ class CreateLabUsage extends CreateRecord
         protected function afterCreate(): void
     {
         // Ambil semua user dengan role super_admin
-        $superAdmins = User::role('super_admin')->get();
+        // $superAdmins = User::role('super_admin')->get();
+        // pastikan data terbaru dan relasi ter-load
+        $record = $this->record->fresh();
 
-        $numLab = $this->record->num_lab;
         $borrow = $this->record;
+        $user = $record->user; // null atau User model
 
         Notification::make()
-            ->title('Someone used an lab!')
+            ->title('Lab Usage Notification')
             ->info()
-            ->body("lab {$numLab} used by " . auth()->user()->name)
+            ->body("Your usage of <strong>Lab {$record->num_lab}</strong> has been created for class <strong>{$record->class_name}</strong>.")
             ->actions([
                 Action::make('view')
                 ->button()
                 ->markAsRead()
-                ->url(LabUsageResource::getUrl('edit', ['record' => $borrow])),
+                ->url(LabUsageResource::getUrl('index', ['record' => $borrow])),
                 ])
-            ->sendToDatabase($superAdmins);
+            ->sendToDatabase($user);
     }
 }

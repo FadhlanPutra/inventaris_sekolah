@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -196,61 +197,67 @@ class LabUsageResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->visible(fn () => auth()->user()->hasRole('super_admin')),
-                Action::make('Done')
-                    ->color('success')
-                    ->icon('heroicon-o-check-circle')
-                    ->form([
-                        Select::make('class_name')
-                            ->label('Class')
-                            ->options([
-                                'X RPL'  => 'X RPL',
-                                'X DKV'  => 'X DKV',
-                                'X TKJ'  => 'X TKJ',
-                                'XI RPL' => 'XI RPL',
-                                'XI DKV' => 'XI DKV',
-                                'XI TKJ' => 'XI TKJ',
-                                'XII RPL'=> 'XII RPL',
-                                'XII DKV'=> 'XII DKV',
-                                'XII TKJ'=> 'XII TKJ',
-                            ])
-                            ->default(fn ($record) => $record->class_name)
-                            ->required(),
-                            
-                        TextInput::make('num_students')
-                            ->label('Number of students')
-                            ->numeric()
-                            ->default(fn ($record) => $record->num_students)
-                            ->required(),
-                            
-                        TextInput::make('lab_function')
-                            ->label('Lab Function')
-                            ->default(fn ($record) => $record->lab_function)
-                            ->required(),
-                            
-                        TextInput::make('end_state')
-                            ->label('End State')
-                            ->default(fn ($record) => $record->end_state)
-                            ->required(),
-                            
-                        Textarea::make('notes')
-                            ->label('Notes')
-                            ->default(fn ($record) => $record->notes)
-                            ->nullable(),
-                    ])
-                    ->action(function (array $data, LabUsage $record): void {
-                        $record->update($data);
-                    })
-                    ->visible(fn (LabUsage $record) => 
-                        auth()->user()->hasRole('super_admin') || $record->status === 'incomplete'
-                    )
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->visible(fn () => auth()->user()->hasRole('super_admin')),
+                    Tables\Actions\DeleteAction::make()
+                        ->visible(fn () => auth()->user()->hasRole('super_admin')),
+                    Action::make('Done')
+                        ->color('success')
+                        ->icon('heroicon-o-check-circle')
+                        ->form([
+                            Select::make('class_name')
+                                ->label('Class')
+                                ->options([
+                                    'X RPL'  => 'X RPL',
+                                    'X DKV'  => 'X DKV',
+                                    'X TKJ'  => 'X TKJ',
+                                    'XI RPL' => 'XI RPL',
+                                    'XI DKV' => 'XI DKV',
+                                    'XI TKJ' => 'XI TKJ',
+                                    'XII RPL'=> 'XII RPL',
+                                    'XII DKV'=> 'XII DKV',
+                                    'XII TKJ'=> 'XII TKJ',
+                                ])
+                                ->default(fn ($record) => $record->class_name)
+                                ->required(),
+                                
+                            TextInput::make('num_students')
+                                ->label('Number of students')
+                                ->numeric()
+                                ->default(fn ($record) => $record->num_students)
+                                ->required(),
+                                
+                            TextInput::make('lab_function')
+                                ->label('Lab Function')
+                                ->default(fn ($record) => $record->lab_function)
+                                ->required(),
+                                
+                            TextInput::make('end_state')
+                                ->label('End State')
+                                ->default(fn ($record) => $record->end_state)
+                                ->required(),
+                                
+                            Textarea::make('notes')
+                                ->label('Notes')
+                                ->default(fn ($record) => $record->notes)
+                                ->nullable(),
+                        ])
+                        ->action(function (array $data, LabUsage $record): void {
+                            $record->update($data);
+                        })
+                        ->visible(fn (LabUsage $record) => 
+                            auth()->user()->hasRole('super_admin') || $record->status === 'incomplete'
+                        )
+                ])
+                ->button()
+                ->label('Actions')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->visible(fn () => auth()->user()->can('export_lab::usage'))
                         ->exports([
                             ExcelExport::make('table')
                                 ->fromTable()

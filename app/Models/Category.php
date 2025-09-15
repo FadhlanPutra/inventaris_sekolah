@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsResponseCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\ClearsResponseCache;
 
 class Category extends Model
 {

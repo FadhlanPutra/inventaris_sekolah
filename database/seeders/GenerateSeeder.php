@@ -21,12 +21,12 @@ class GenerateSeeder extends Seeder
             return;
         }
 
-        $this->command->newLine();
-        $this->command->warn("AKUN '{$user->email}' AKAN MENJADI SUPER_ADMIN");
+        // $this->command->newLine();
+        // $this->command->warn("AKUN '{$user->email}' AKAN MENJADI SUPER_ADMIN");
 
-        Artisan::call('shield:generate', ['--all' => true], $this->command->getOutput());
-        Artisan::call('shield:super-admin', ['--user' => $user->id]);
-        $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
+        // Artisan::call('shield:generate', ['--all' => true], $this->command->getOutput());
+        // Artisan::call('shield:super-admin', ['--user' => $user->id]);
+        // $this->command->info("Shield commands berhasil dijalankan untuk user {$user->email}");
 
 
         // // Jalankan npm install
@@ -42,16 +42,16 @@ class GenerateSeeder extends Seeder
         // }
         
         // Setelah install sukses, lanjut build
-        $this->command->warn("Menjalankan npm run build...");
-        $returnBuild = 0;
-        passthru('npm run build', $returnBuild);
+        // $this->command->warn("Menjalankan npm run build...");
+        // $returnBuild = 0;
+        // passthru('npm run build', $returnBuild);
 
-        if ($returnBuild === 0) {
-            $this->command->info("npm run build berhasil!");
-        } else {
-            $this->command->error("npm run build gagal.");
-            $this->command->error("pastikan Anda sudah menjalankan 'npm install' sebelumnya.");
-        }
+        // if ($returnBuild === 0) {
+        //     $this->command->info("npm run build berhasil!");
+        // } else {
+        //     $this->command->error("npm run build gagal.");
+        //     $this->command->error("pastikan Anda sudah menjalankan 'npm install' sebelumnya.");
+        // }
 
         $this->command->info("Menjalankan caching...");
         Artisan::call('icons:cache');

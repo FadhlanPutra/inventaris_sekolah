@@ -3,12 +3,13 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use Filament\Tables;
 use App\Models\User;
+use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -90,7 +91,17 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('roles')
+                    ->label('Role')
+                    ->relationship('roles', 'name')
+                    ->options([
+                        'super_admin' => 'Super Admin',
+                        'guru'        => 'Guru',
+                        'siswa'       => 'Siswa',
+                    ])
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -49,6 +49,7 @@ class ListLabUsages extends ListRecords
         ->icon('heroicon-o-arrow-down-tray')
         ->color('primary')  // tombol utama biru
         ->button()
+        ->visible(auth()->user()->can('export_lab::usage'))
         ->outlined(false),
             Actions\CreateAction::make(),
         ];

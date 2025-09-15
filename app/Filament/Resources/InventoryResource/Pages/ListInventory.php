@@ -50,8 +50,10 @@ class ListInventory extends ListRecords
         ->icon('heroicon-o-arrow-down-tray')
         ->color('primary')  // tombol utama biru
         ->button()
+        ->visible(auth()->user()->can('export_inventory'))
         ->outlined(false),
              ExcelImportAction::make()
+                ->visible(auth()->user()->can('import_inventory'))
                 ->color('primary'),
             Actions\CreateAction::make(),
         ];

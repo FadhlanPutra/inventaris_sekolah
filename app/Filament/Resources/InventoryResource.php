@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use EightyNine\ExcelImport\ExcelImportAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -85,6 +86,11 @@ class InventoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                if (auth()->user()->hasAnyRole(['guru', 'siswa'])) {
+                    $query->where('status', 'available');
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('item_name')
                     ->placeholder('No Item Name')
@@ -98,10 +104,26 @@ class InventoryResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->placeholder('No Quantity')
                     ->numeric()
+                    ->color(fn ($state) => match (true) {
+                        $state === 0      => 'danger',
+                        $state < 10       => 'warning',
+                        default           => null,
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->placeholder('No Status')
+                Tables\Columns\TextColumn::make('status_label')
+                    ->label('Status')
+                    ->getStateUsing(fn ($record) => ucfirst($record->status))
+                    ->visible(fn () => auth()->user()->hasAnyRole(['guru', 'siswa'])),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options([
+                        'available'   => 'Available',
+                        'unavailable' => 'Unavailable',
+                    ])
+                    ->label('Status')
+                    ->selectablePlaceholder(false)
+                    ->rules(['required', 'in:available,unavailable'])
                     ->sortable()
+                    ->visible(fn () => auth()->user()->hasRole('super_admin'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('desc')
                     ->placeholder('No Description')
@@ -134,10 +156,17 @@ class InventoryResource extends Resource
                                 $data['created_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
-                    })
+                    }),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'available'   => 'Available',
+                        'unavailable' => 'Unavailable',
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -21,11 +21,12 @@ class CreateBorrow extends CreateRecord
 
         $itemName = $this->record->item?->item_name;
         $borrow = $this->record;
+        $user = $this->record->user?->name;
 
         Notification::make()
             ->title('Someone borrowed an item!')
             ->info()
-            ->body("Item {$itemName} borrowed by " . auth()->user()->name)
+            ->body("Item <strong style='color:blue'>{$itemName}</strong> borrowed by <span style='color:blue'>{$user}</span>")
             ->actions([
                 Action::make('view')
                 ->button()

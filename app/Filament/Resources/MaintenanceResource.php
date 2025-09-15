@@ -122,7 +122,7 @@ class MaintenanceResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->visible(fn () => auth()->user()->can('export_maintenance'))
                         ->exports([
                             ExcelExport::make('table')
                                 ->fromTable()
