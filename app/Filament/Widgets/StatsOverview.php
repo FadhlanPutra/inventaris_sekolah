@@ -16,7 +16,11 @@ class StatsOverview extends BaseWidget
     {
         return [
            Stat::make('Inventories Total Stock', $this->getTotalInventory())
-                ->description('Press for details')
+                ->description(
+                    auth()->user()->can('view_any_inventory')
+                        ? 'Press for details'
+                        : 'Showing total stock'
+                )      
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('primary')
                 ->url(
@@ -25,7 +29,11 @@ class StatsOverview extends BaseWidget
                         : null
                 ),
             Stat::make('Borrowed Items', $this->getBarangDipinjam())
-                ->description('Press for Details')
+                ->description(
+                    auth()->user()->can('view_any_borrow')
+                        ? 'Press for details'
+                        : 'Currently borrowed items'
+                )      
                 ->descriptionIcon('heroicon-m-clipboard-document-list')
                 ->color('warning')
                 ->url(
@@ -34,7 +42,11 @@ class StatsOverview extends BaseWidget
                         : null
                 ),
             Stat::make('Items Under Maintenance', $this->getMaintenance())
-                ->description('Press for Details')
+                ->description(
+                    auth()->user()->can('view_any_maintenance')
+                        ? 'Press for details'
+                        : 'Items currently under maintenance'
+                )                
                 ->descriptionIcon('heroicon-m-wrench')
                 ->color('success')
                 ->url(

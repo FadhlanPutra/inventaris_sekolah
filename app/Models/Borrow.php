@@ -2,19 +2,30 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\LogOptions;
 use App\Traits\ClearsResponseCache;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Borrow extends Model
 {
-    use ClearsResponseCache;
+    use ClearsResponseCache, LogsActivity;
     protected static array $cacheClearUrls = [
         '/dashboard',
         '/dashboard/borrows',
     ];
     protected $fillable = ['user_id', 'item_id', 'borrow_time', 'return_time', 'labusage_id', 'quantity', 'status'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('borrow')
+            ->logOnly(['user_id', 'item_id', 'borrow_time', 'return_time', 'quantity', 'status'])
+            ->setDescriptionForEvent(fn (string $eventName) => "Borrow record has been {$eventName}")
+            ->dontSubmitEmptyLogs();
+    }
 
     public function labusage(): BelongsTo
     {

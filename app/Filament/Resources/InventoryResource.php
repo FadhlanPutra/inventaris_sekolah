@@ -46,8 +46,12 @@ class InventoryResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
-        return static::getModel()::count();
+        if (auth()->user()->hasrole('super_admin')) {
+            return Inventory::count();
+        } else {
+            return Inventory::where('status', 'available')->count();
+        }
+        // return static::getModel()::count();
     }
 
     public static function form(Form $form): Form
@@ -57,7 +61,7 @@ class InventoryResource extends Resource
                 Forms\Components\TextInput::make('item_name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('category')
+                Forms\Components\Select::make('category_id')
                     ->label('Category')
                     ->relationship(name: 'category', titleAttribute: 'name')
                     ->required()

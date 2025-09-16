@@ -5,29 +5,30 @@ namespace App\Providers\Filament;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
+use Hasnayeen\Themes\ThemesPlugin;
+use Filament\Navigation\NavigationItem;
 use App\Filament\Dashboard\Themes\Pesat;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\MenuItem;
 use Filament\Http\Middleware\Authenticate;
+use Rmsramos\Activitylog\ActivitylogPlugin;
+use JibayMcs\FilamentTour\FilamentTourPlugin;
+use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Notifications\Livewire\Notifications;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use App\Filament\Pages\Auth\EmailVerificationPromptCustom;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Hasnayeen\Themes\ThemesPlugin;
-use Hasnayeen\Themes\Http\Middleware\SetTheme;
-use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
-use JibayMcs\FilamentTour\FilamentTourPlugin;
-use Filament\Navigation\NavigationItem;
-use Filament\Notifications\Livewire\Notifications;
-use App\Filament\Pages\Auth\EmailVerificationPromptCustom;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -95,6 +96,14 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('20s')
             ->plugins([
                 FilamentShieldPlugin::make(),
+                ActivitylogPlugin::make()
+                    ->label('Log')
+                    ->navigationCountBadge(true)
+                    ->navigationGroup('Activity Log')
+                    ->pluralLabel('Logs')
+                    ->authorize(
+                        fn () => auth()->user()->can('access_log')
+                    ),
                 FilamentTourPlugin::make(),
                 FilamentEditProfilePlugin::make()
                         ->shouldRegisterNavigation(false)

@@ -31,6 +31,7 @@ class WarmPageCache extends Command
             route('filament.dashboard.resources.maintenances.index'),
             route('filament.dashboard.resources.shield.roles.index'),
             route('filament.dashboard.resources.users.index'),
+            route('filament.dashboard.resources.activitylogs.index'),
 
             route('filament.dashboard.resources.borrows.create'),
             route('filament.dashboard.resources.categories.create'),

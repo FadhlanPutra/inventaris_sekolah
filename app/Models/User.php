@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Filament\Panel;
 use Illuminate\Support\Str;
 use App\Traits\ClearsResponseCache;
@@ -17,21 +15,18 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Filament\Models\Concerns\SendsFilamentPasswordResetNotification;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, ClearsResponseCache;
+    use HasFactory, Notifiable, HasRoles, ClearsResponseCache, LogsActivity;
+
     protected static array $cacheClearUrls = [
         '/dashboard',
         '/dashboard/users',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -41,21 +36,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         'has_seen_tour',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -64,9 +49,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         ];
     }
 
-    /**
-     * Get the user's initials
-     */
+    protected static function booted()
+    {
+        static::updating(function (User $user) {
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+        });
+    }
+
     public function initials(): string
     {
         return Str::of($this->name)
@@ -75,22 +66,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
-    
-        public function canAccessPanel(Panel $panel): bool
+
+    public function canAccessPanel(Panel $panel): bool
     {
-        return true; // beri akses semua user
+        return true;
     }
 
     public function getFilamentAvatarUrl(): ?string 
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
 
-        // Pastikan tidak ada infinite loop
         if (!$this->$avatarColumn) {
             return null;
         }
-        
-        // Gunakan disk yang sama dengan konfigurasi package
+
         $disk = config('filament-edit-profile.disk', 'public');
 
         try {
@@ -98,5 +87,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    // Logging konfigurasi
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('user')
+            ->logOnly(['name', 'email', 'role', 'avatar_url'])
+            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}")
+            ->dontSubmitEmptyLogs();
     }
 }
