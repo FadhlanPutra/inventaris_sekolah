@@ -24,7 +24,6 @@ class DummyData extends Seeder
             [
                 'category_id' => 1,
                 'item_name' => 'Laptop ASUS ROG',
-                'category' => 'Electronics',
                 'quantity' => 5,
                 'status' => 'available',
                 'desc' => 'High-performance laptop for gaming and research.',
@@ -34,7 +33,6 @@ class DummyData extends Seeder
             [
                 'category_id' => 2,
                 'item_name' => 'Projector Epson',
-                'category' => 'Multimedia',
                 'quantity' => 2,
                 'status' => 'unavailable',
                 'desc' => 'Used for classroom presentations.',
@@ -44,7 +42,6 @@ class DummyData extends Seeder
             [
                 'category_id' => 3,
                 'item_name' => 'Arduino Kit',
-                'category' => 'Lab Tools',
                 'quantity' => 10,
                 'status' => 'available',
                 'desc' => 'Starter kit for IoT and robotics projects.',

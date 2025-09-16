@@ -49,8 +49,8 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->maxLength(255),
-                // Forms\Components\DateTimePicker::make('email_verified_at'),
+                    ->maxLength(255)    
+                    ->helperText('Updating this email will reset its verification status until it is verified again.'),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->revealable()
