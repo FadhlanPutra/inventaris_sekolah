@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->id('dashboard')
-            ->path('/dashboard')
+            ->path('dashboard')
             // app_asset() ada di app/Helpers/helpers.php
             ->brandLogo(app_asset('images/logo.png'))
             ->favicon(app_asset('images/logo_x.png'))
