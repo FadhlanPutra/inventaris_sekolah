@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BorrowResource\Pages;
 
 use Filament\Actions;
 use App\Models\Borrow;
+use App\Exports\BorrowCustomExport;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\BorrowResource;
@@ -24,7 +25,9 @@ class ListBorrows extends ListRecords
                 ->label('Export All')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->exports([
-                    ExcelExport::make()->fromModel(Borrow::class),
+                    BorrowCustomExport::make()
+                        ->fromModel(Borrow::class)
+                        ->modifyQueryUsing(fn ($q) => $q->with('labusage', 'user', 'item')),
                 ])
                 ->extraAttributes([
                     // styling item di dropdown: no bg, margin, padding, gap, dll
@@ -36,10 +39,11 @@ class ListBorrows extends ListRecords
                 ->label('Export Last 1 Month')
                 ->icon('heroicon-o-calendar')
                 ->exports([
-                    ExcelExport::make()
+                    BorrowCustomExport::make()
                         ->fromModel(Borrow::class)
-                        ->modifyQueryUsing(fn ($query) =>
-                            $query->where('created_at', '>=', now()->subMonth())
+                        ->modifyQueryUsing(fn ($query) => 
+                            $query->with(['labusage', 'user', 'item'])
+                                  ->where('created_at', '>=', now()->subMonth())
                         ),
                 ])
                 ->extraAttributes([
@@ -69,16 +73,16 @@ class ListBorrows extends ListRecords
                 ->modifyQueryUsing(fn ($query) => $query),
 
             'Pending' => Tab::make()
-                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'pending')->count())
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'pending')),
+                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'Pending')->count())
+                ->modifyQueryUsing(fn ($query) => $query->where('status', 'Pending')),
 
             'Active' => Tab::make()
-                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'active')->count())
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'active')),
+                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'Active')->count())
+                ->modifyQueryUsing(fn ($query) => $query->where('status', 'Active')),
 
             'Finished' => Tab::make()
-                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'finished')->count())
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'finished')),
+                ->badge(fn () => BorrowResource::getEloquentQuery()->where('status', 'Finished')->count())
+                ->modifyQueryUsing(fn ($query) => $query->where('status', 'Finished')),
         ];
     }
 }

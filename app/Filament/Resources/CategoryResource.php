@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
+use App\Exports\CategoryCustomExport;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -33,7 +34,7 @@ class CategoryResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
+        // return Borrow::where('status', 'Pending')->count();
         return static::getModel()::count();
     }
 
@@ -42,6 +43,8 @@ class CategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Category Name')
+                    ->unique(ignoreRecord: true)
                     ->required(),
             ]);
     }
@@ -50,6 +53,10 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->placeholder('Null')
+                    ->label('ID')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->placeholder('No Category Name')
                     ->label('Category Name')
@@ -90,13 +97,10 @@ class CategoryResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->visible(fn () => auth()->user()->can('export_category'))
                         ->exports([
-                            ExcelExport::make('table')
-                                ->fromTable()
-                                ->withFilename(fn ($resource, $livewire, $model) =>
-                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
-                                ),
+                            CategoryCustomExport::make('selected')
+                                // ->fromTable(),
                         ]),
                 ]),
             ]);

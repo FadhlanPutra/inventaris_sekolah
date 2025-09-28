@@ -2,9 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Borrow;
+use Carbon\Carbon;
+use App\Models\Category;
+use App\Models\LabUsage;
+use App\Models\Inventory;
+use App\Models\Maintenance;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class DummyData extends Seeder
 {
@@ -13,37 +18,49 @@ class DummyData extends Seeder
      */
     public function run(): void
     {
-        DB::table('categories')->insert([
-            ['name' => 'Electronics'],
-            ['name' => 'Multimedia'],
-            ['name' => 'Lab Tools'],
+        Category::insert([
+            [
+                'name' => 'Electronics',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Multimedia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Lab Tools',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
 
-        DB::table('inventories')->insert([
+        Inventory::insert([
             [
-                'category_id' => 1,
                 'item_name' => 'Laptop ASUS ROG',
+                'category_id' => 1,
                 'quantity' => 5,
-                'status' => 'available',
+                'status' => 'Available',
                 'desc' => 'High-performance laptop for gaming and research.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'category_id' => 2,
                 'item_name' => 'Projector Epson',
+                'category_id' => 2,
                 'quantity' => 2,
-                'status' => 'unavailable',
+                'status' => 'Unavailable',
                 'desc' => 'Used for classroom presentations.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'category_id' => 3,
                 'item_name' => 'Arduino Kit',
+                'category_id' => 3,
                 'quantity' => 10,
-                'status' => 'available',
+                'status' => 'Available',
                 'desc' => 'Starter kit for IoT and robotics projects.',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -51,33 +68,73 @@ class DummyData extends Seeder
         ]);
 
 
-         DB::table('borrows')->insert([
+        LabUsage::insert([
             [
                 'user_id' => 1,
-                'item_id' => 2,
-                'borrow_time' => Carbon::now()->subDays(2),
-                'return_time' => Carbon::now()->addDays(5),
-                'labusage_id' => 1,
-                'quantity' => 3,
-                'status' => 'active',
+                'status' => 'Complete',
+                'num_lab' => 2,
+                'class_name' => 'X RPL',
+                'num_students' => 25,
+                'lab_function' => 'Computer Programming Class',
+                'end_state' => 'All PCs working fine',
+                'notes' => 'Used for final project practice',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 1,
-                'item_id' => 1,
-                'borrow_time' => Carbon::now()->subDays(1),
-                'return_time' => null,
-                'labusage_id' => 2,
-                'quantity' => 1,
-                'status' => 'pending',
+                'status' => 'Incomplete',
+                'num_lab' => 3,
+                'class_name' => 'XII RPL',
+                'num_students' => null,
+                'lab_function' => 'Electronics Workshop',
+                'end_state' => '2 kits damaged',
+                'notes' => 'Overloaded Arduino boards',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 1,
+                'status' => 'Complete',
+                'num_lab' => 1,
+                'class_name' => 'XI RPL',
+                'num_students' => 25,
+                'lab_function' => 'Networking Practice',
+                'end_state' => 'Switch rebooted',
+                'notes' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
 
 
-        DB::table('maintenances')->insert([
+        Borrow::insert([
+            [
+                'user_id' => 1,
+                'item_id' => 2,
+                'quantity' => 3,
+                'labusage_id' => 1,
+                'borrow_time' => Carbon::now()->subDays(2),
+                'return_time' => Carbon::now()->addDays(5),
+                'status' => 'Active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 1,
+                'item_id' => 1,
+                'quantity' => 1,
+                'labusage_id' => 2,
+                'borrow_time' => Carbon::now()->subDays(1),
+                'return_time' => null,
+                'status' => 'Pending',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+
+        Maintenance::insert([
             [
                 'inventory_id' => 1,
                 'issue' => 'Broken screen',
@@ -102,43 +159,6 @@ class DummyData extends Seeder
                 'condition_before' => 'Fan clogged',
                 'condition_after' => 'Cleaned, works fine',
                 'add_notes' => 'Next check in 6 months',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-
-        DB::table('lab_usages')->insert([
-            [
-                'user_id' => 1,
-                'num_lab' => 2,
-                'class_name' => 'X RPL',
-                'num_students' => 25,
-                'lab_function' => 'Computer Programming Class',
-                'end_state' => 'All PCs working fine',
-                'notes' => 'Used for final project practice',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'num_lab' => 3,
-                'class_name' => 'X RPL',
-                'num_students' => 25,
-                'lab_function' => 'Electronics Workshop',
-                'end_state' => '2 kits damaged',
-                'notes' => 'Overloaded Arduino boards',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'num_lab' => 1,
-                'class_name' => 'X RPL',
-                'num_students' => 25,
-                'lab_function' => 'Networking Practice',
-                'end_state' => 'Switch rebooted',
-                'notes' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

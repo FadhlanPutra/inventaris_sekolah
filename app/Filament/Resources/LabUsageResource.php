@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use App\Exports\LabUsageCustomExport;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
@@ -95,17 +96,40 @@ class LabUsageResource extends Resource
                     ->placeholder('Select Lab Number'),
                 Forms\Components\Select::make('class_name')
                     ->label('Class')
-                    ->options([
-                        'X RPL'  => 'X RPL',
-                        'X DKV'  => 'X DKV',
-                        'X TKJ'  => 'X TKJ',
-                        'XI RPL' => 'XI RPL',
-                        'XI DKV' => 'XI DKV',
-                        'XI TKJ' => 'XI TKJ',
-                        'XII RPL'=> 'XII RPL',
-                        'XII DKV'=> 'XII DKV',
-                        'XII TKJ'=> 'XII TKJ',
-                    ])
+                    ->hint('Shows classes not using the lab today')
+                    ->options(function ($record) {
+                        // daftar semua class
+                        $allClasses = [
+                            'X RPL'  => 'X RPL',
+                            'X DKV'  => 'X DKV',
+                            'X TKJ'  => 'X TKJ',
+                            'XI RPL' => 'XI RPL',
+                            'XI DKV' => 'XI DKV',
+                            'XI TKJ' => 'XI TKJ',
+                            'XII RPL'=> 'XII RPL',
+                            'XII DKV'=> 'XII DKV',
+                            'XII TKJ'=> 'XII TKJ',
+                        ];
+                    
+                        // ambil class yang sudah dipakai hari ini
+                        $used = LabUsage::whereDate('created_at', now()->toDateString())
+                            ->pluck('class_name')
+                            ->toArray();
+                    
+                        // kalau sedang edit, biar class lama tetap ada
+                        if ($record?->class_name) {
+                            $used = array_diff($used, [$record->class_name]);
+                        }
+                    
+                        // filter yang tersedia
+                        $available = array_diff(array_keys($allClasses), $used);
+                    
+                        // return hanya class yang tersedia
+                        return collect($allClasses)
+                            ->filter(fn ($label, $key) => in_array($key, $available))
+                            ->toArray();
+                    })
+                    ->placeholder('Select Class')
                     ->required(),
                 Forms\Components\TextInput::make('num_students')
                     ->label('Number of Students')
@@ -135,12 +159,12 @@ class LabUsageResource extends Resource
                 Tables\Columns\TextColumn::make('num_lab')
                     ->label('Status')
                     ->badge()
-                    ->color(fn ($record) => $record->status === 'complete' ? 'success' : 'danger')
+                    ->color(fn ($record) => $record->status === 'Complete' ? 'success' : 'danger')
                     ->formatStateUsing(function ($record) {
-                        $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'No Lab';
-                        $class = $record->class_name ?? 'No Class';
-                        $numStudents = $record->num_students ? "Students: {$record->num_students}" : 'No child';
-                        $status = ucfirst($record->status ?? 'incomplete');
+                        $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'Not Filled';
+                        $class = $record->class_name ?? 'Not Filled';
+                        $numStudents = $record->num_students ? "Students: {$record->num_students}" : 'Not Filled';
+                        $status = ucfirst($record->status ?? 'Incomplete');
 
                         return ("{$status} | {$labNumber} | {$class} | {$numStudents}");
                     }),
@@ -161,7 +185,8 @@ class LabUsageResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Used At')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -247,7 +272,7 @@ class LabUsageResource extends Resource
                             $record->update($data);
                         })
                         ->visible(fn (LabUsage $record) => 
-                            auth()->user()->hasRole('super_admin') || $record->status === 'incomplete'
+                            auth()->user()->hasRole('super_admin') || $record->status === 'Incomplete'
                         )
                 ])
                 ->button()
@@ -259,11 +284,9 @@ class LabUsageResource extends Resource
                     ExportBulkAction::make()
                         ->visible(fn () => auth()->user()->can('export_lab::usage'))
                         ->exports([
-                            ExcelExport::make('table')
-                                ->fromTable()
-                                ->withFilename(fn ($resource, $livewire, $model) =>
-                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
-                                ),
+                            LabUsageCustomExport::make('selected')
+                                // ->fromTable()
+                                ->modifyQueryUsing(fn ($q) => $q->with('user')),
                         ]),
                 ]),
             ])

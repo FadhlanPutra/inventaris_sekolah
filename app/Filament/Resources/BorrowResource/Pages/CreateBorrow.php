@@ -35,7 +35,7 @@ class CreateBorrow extends CreateRecord
                 // Action::make('approve')
                 //     ->button()
                 //     ->action(function () use ($borrow) {
-                //         Borrow::find($borrow->id)?->update(['status' => 'active']);
+                //         Borrow::find($borrow->id)?->update(['status' => 'Active']);
                 //     }), // kalau mau coba pake livewire, tapi malas pake dispatch()
                 ])
             ->sendToDatabase($superAdmins);

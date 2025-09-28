@@ -59,7 +59,7 @@ class ShieldSeeder extends Seeder
 
               "page_EditProfilePage", "page_Themes",
 
-              "export_inventory", "export_borrow", "export_maintenance", "export_lab::usage", "import_inventory", "access_log"
+              "export_category", "export_inventory", "export_borrow", "export_maintenance", "export_lab::usage", "import_inventory", "access_log"
             ]
           },
           {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\MaintenanceCustomExport;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -33,7 +34,7 @@ class MaintenanceResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
+        // return Borrow::where('status', 'Pending')->count();
         return static::getModel()::count();
     }
 
@@ -43,8 +44,19 @@ class MaintenanceResource extends Resource
             ->schema([
                 Forms\Components\Select::make('inventory_id')
                     ->label('Item Name')
-                    ->relationship(name: 'inventory', titleAttribute: 'item_name')
-                    ->required()
+                    ->relationship(
+                        name: 'inventory',
+                        titleAttribute: 'item_name',
+                        modifyQueryUsing: function (Builder $query, string $operation) {
+                            // Kondisi: hanya inventory dengan quantity > 0
+                            $query->where('quantity', '>', 0);
+                            // Opsional: jika ingin berbeda behavior di form edit
+                            // if ($operation === 'edit') {
+                            //     // misalnya, bagi edit kamu tetap mau semua inventory, atau tetap filter
+                            //     $query->where('quantity', '>', 0);
+                            // }
+                        }
+                    )                    ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('issue')
@@ -64,7 +76,7 @@ class MaintenanceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->description(auth()->user()->hasRole('super_admin') ? 'Select data and click "Bulk Actions" to export to Excel.' : null)
+        ->description(auth()->user()->can('export_maintenance') ? 'Select data and click "Bulk Actions" to export to Excel.' : null)
             ->columns([
                 Tables\Columns\TextColumn::make('inventory.item_name')
                     ->label('Item Name')
@@ -124,11 +136,9 @@ class MaintenanceResource extends Resource
                     ExportBulkAction::make()
                         ->visible(fn () => auth()->user()->can('export_maintenance'))
                         ->exports([
-                            ExcelExport::make('table')
-                                ->fromTable()
-                                ->withFilename(fn ($resource, $livewire, $model) =>
-                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
-                                ),
+                            MaintenanceCustomExport::make('selected')
+                                // ->fromTable()
+                                ->modifyQueryUsing(fn ($q) => $q->with('inventory')),
                         ]),
                 ]),
             ]);

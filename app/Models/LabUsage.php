@@ -24,13 +24,13 @@ class LabUsage extends Model
 
     protected $fillable = [
         'user_id',
+        'status',
         'num_lab',
+        'class_name',
+        'num_students',
         'lab_function',
         'end_state',
         'notes',
-        'num_students',
-        'class_name',
-        'status',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -57,12 +57,12 @@ class LabUsage extends Model
             $allFilled = collect($requiredFields)->every(fn ($field) => !empty($labUsage->$field));
 
             // Update status otomatis
-            $labUsage->status = $allFilled ? 'complete' : 'incomplete';
+            $labUsage->status = $allFilled ? 'Complete' : 'Incomplete';
         });
 
         static::updated(function ($labUsage) {
             // Kalau status berubah dan sekarang complete → kirim notifikasi ke user
-            if ($labUsage->isDirty('status') && $labUsage->status === 'complete') {
+            if ($labUsage->isDirty('status') && $labUsage->status === 'Complete') {
                 $user = $labUsage->user;
 
                 if ($user) {

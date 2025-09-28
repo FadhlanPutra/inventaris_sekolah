@@ -32,4 +32,23 @@ class Category extends Model
     {
         return $this->hasMany(Inventory::class);
     }
+
+    protected static function booted()
+    {
+        static::saving(function ($model) {
+            // Normalisasi dulu kalau mau case insensitive
+            $name = trim($model->name);
+
+            $exists = static::query()
+                ->when($model->exists, fn ($q) => $q->where('id', '!=', $model->id))
+                ->whereRaw('LOWER(name) = ?', [strtolower($name)]) // case-insensitive check
+                ->exists();
+
+            if ($exists) {
+                throw new \Exception("Category with name '{$name}' has already been taken");
+            }
+
+            $model->name = $name;
+        });
+    }
 }
