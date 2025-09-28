@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
+            $table->string('item_name')->unique();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
-            $table->string('item_name');
             $table->integer('quantity')->default(1);
-            $table->enum('status', ['available', 'unavailable'])->default('available');
+            $table->enum('status', ['Available', 'Unavailable'])->default('Available');
             $table->text('desc')->nullable();
             $table->timestamps();
         });

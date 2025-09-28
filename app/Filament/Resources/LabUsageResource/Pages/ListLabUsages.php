@@ -4,6 +4,7 @@ namespace App\Filament\Resources\LabUsageResource\Pages;
 
 use Filament\Actions;
 use App\Models\LabUsage;
+use App\Exports\LabUsageCustomExport;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\LabUsageResource;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -23,7 +24,9 @@ class ListLabUsages extends ListRecords
                 ->label('Export All')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->exports([
-                    ExcelExport::make()->fromModel(LabUsage::class),
+                    LabUsageCustomExport::make()
+                        ->fromModel(LabUsage::class)
+                        ->modifyQueryUsing(fn ($q) => $q->with('user')),
                 ])
                 ->extraAttributes([
                     // styling item di dropdown: no bg, margin, padding, gap, dll
@@ -35,10 +38,11 @@ class ListLabUsages extends ListRecords
                 ->label('Export Last 1 Month')
                 ->icon('heroicon-o-calendar')
                 ->exports([
-                    ExcelExport::make()
+                    LabUsageCustomExport::make()
                         ->fromModel(LabUsage::class)
-                        ->modifyQueryUsing(fn ($query) =>
-                            $query->where('created_at', '>=', now()->subMonth())
+                        ->modifyQueryUsing(fn ($query) => 
+                            $query->with(['user'])
+                                  ->where('created_at', '>=', now()->subMonth())
                         ),
                 ])
                 ->extraAttributes([

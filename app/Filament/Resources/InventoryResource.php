@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Actions;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use App\Models\Inventory;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
+use App\Exports\InventoryCustomExport;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +51,7 @@ class InventoryResource extends Resource
         if (auth()->user()->hasrole('super_admin')) {
             return Inventory::count();
         } else {
-            return Inventory::where('status', 'available')->count();
+            return Inventory::where('status', 'Available')->count();
         }
         // return static::getModel()::count();
     }
@@ -60,6 +62,7 @@ class InventoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('item_name')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\Select::make('category_id')
                     ->label('Category')
@@ -71,18 +74,28 @@ class InventoryResource extends Resource
                     ->required()
                     ->numeric()
                     ->placeholder(1)
+                    ->live()
                     ->minValue(0),
                 Forms\Components\Select::make('status')
                     ->label('Borrowable')
                     ->hint('Can it be borrowed?')
-                    ->options([
-                        'available' => 'Available',
-                        'unavailable' => 'Unavailable',
-                    ])
+                    ->options(function (Get $get): array {
+                        if ($get('quantity') !== null && $get('quantity') <= 0) {
+                            return [
+                                'Unavailable' => 'Unavailable',
+                            ];
+                        }
+                    
+                        return [
+                            'Available'   => 'Available',
+                            'Unavailable' => 'Unavailable',
+                        ];
+                    })
                     ->required()
-                    ->default('borrowable'),
+                    ->default('Available'),
                     // ->disabledOn('create'),
                 Forms\Components\Textarea::make('desc')
+                    ->label('Description')
                     ->columnSpanFull(),
             ]);
     }
@@ -92,7 +105,7 @@ class InventoryResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 if (auth()->user()->hasAnyRole(['guru', 'siswa'])) {
-                    $query->where('status', 'available');
+                    $query->where('status', 'Available');
                 }
             })
             ->columns([
@@ -109,9 +122,9 @@ class InventoryResource extends Resource
                     ->placeholder('No Quantity')
                     ->numeric()
                     ->color(fn ($state) => match (true) {
-                        $state === 0      => 'danger',
+                        $state <= 0       => 'danger',
                         $state < 10       => 'warning',
-                        default           => null,
+                        default           => 'success',
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status_label')
@@ -120,16 +133,17 @@ class InventoryResource extends Resource
                     ->visible(fn () => auth()->user()->hasAnyRole(['guru', 'siswa'])),
                 Tables\Columns\SelectColumn::make('status')
                     ->options([
-                        'available'   => 'Available',
-                        'unavailable' => 'Unavailable',
+                        'Available'   => 'Available',
+                        'Unavailable' => 'Unavailable',
                     ])
                     ->label('Status')
                     ->selectablePlaceholder(false)
-                    ->rules(['required', 'in:available,unavailable'])
+                    ->rules(['required', 'in:Available,Unavailable'])
                     ->sortable()
                     ->visible(fn () => auth()->user()->hasRole('super_admin'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('desc')
+                    ->label('Description')
                     ->placeholder('No Description')
                     ->tooltip(function ($record) {
                         return $record->desc;
@@ -164,8 +178,8 @@ class InventoryResource extends Resource
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'available'   => 'Available',
-                        'unavailable' => 'Unavailable',
+                        'Available'   => 'Available',
+                        'Unavailable' => 'Unavailable',
                     ])
             ])
             ->actions([
@@ -176,13 +190,11 @@ class InventoryResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->visible(fn () => auth()->user()->can('export_inventory'))
                         ->exports([
-                            ExcelExport::make('table')
-                                ->fromTable()
-                                ->withFilename(fn ($resource, $livewire, $model) =>
-                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
-                                ),
+                            InventoryCustomExport::make('selected')
+                                // ->fromTable()
+                                ->modifyQueryUsing(fn ($q) => $q->with('category')),
                         ]),
                 ]),
             ]);

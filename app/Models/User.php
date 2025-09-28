@@ -72,6 +72,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         return true;
     }
 
+    public function getRoleNameAttribute(): string
+    {
+        return $this->roles->pluck('name')->implode(', ');
+    }
+
     public function getFilamentAvatarUrl(): ?string 
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
@@ -94,7 +99,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     {
         return LogOptions::defaults()
             ->useLogName('user')
-            ->logOnly(['name', 'email', 'role', 'avatar_url'])
+            ->logOnly(['name', 'email', 'role_name', 'avatar_url', 'theme_color', 'theme'])
             ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}")
             ->dontSubmitEmptyLogs();
     }

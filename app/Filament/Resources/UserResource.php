@@ -35,7 +35,7 @@ class UserResource extends Resource
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
-        // return Borrow::where('status', 'pending')->count();
+        // return Borrow::where('status', 'Pending')->count();
         return static::getModel()::count();
     }
 
@@ -48,9 +48,14 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
+                    ->unique(ignoreRecord: true)
                     ->required()
                     ->maxLength(255)    
-                    ->helperText('Updating this email will reset its verification status until it is verified again.'),
+                    ->helperText(fn (string $operation): ?string => 
+                        $operation === 'edit'
+                            ? 'Updating this email will reset its verification status until it is verified again.'
+                            : null
+                    ),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->revealable()

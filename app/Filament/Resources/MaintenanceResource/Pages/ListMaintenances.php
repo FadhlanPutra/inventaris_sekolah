@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MaintenanceResource\Pages;
 
+use App\Exports\MaintenanceCustomExport;
 use Filament\Actions;
 use App\Models\Maintenance;
 use Filament\Resources\Pages\ListRecords;
@@ -25,7 +26,9 @@ class ListMaintenances extends ListRecords
                 ->label('Export All')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->exports([
-                    ExcelExport::make()->fromModel(Maintenance::class),
+                    MaintenanceCustomExport::make()
+                        ->fromModel(Maintenance::class)
+                        ->modifyQueryUsing(fn ($q) => $q->with('inventory')),
                 ])
                 ->extraAttributes([
                     // styling item di dropdown: no bg, margin, padding, gap, dll
@@ -37,10 +40,11 @@ class ListMaintenances extends ListRecords
                 ->label('Export Last 1 Month')
                 ->icon('heroicon-o-calendar')
                 ->exports([
-                    ExcelExport::make()
+                    MaintenanceCustomExport::make()
                         ->fromModel(Maintenance::class)
-                        ->modifyQueryUsing(fn ($query) =>
-                            $query->where('created_at', '>=', now()->subMonth())
+                        ->modifyQueryUsing(fn ($query) => 
+                            $query->with(['inventory'])
+                                  ->where('created_at', '>=', now()->subMonth())
                         ),
                 ])
                 ->extraAttributes([

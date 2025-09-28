@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use App\Models\Inventory;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Exports\BorrowCustomExport;
 use Filament\Tables\Filters\Filter;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
@@ -55,7 +56,7 @@ class BorrowResource extends Resource
     // 6. Warna badge kondisional
     // public static function getNavigationBadgeColor(): ?string
     // {
-    //     return Borrow::where('status', 'pending')->count() > 5 ? 'warning' : 'primary';
+    //     return Borrow::where('status', 'Pending')->count() > 5 ? 'warning' : 'primary';
     // }
 
 
@@ -74,21 +75,17 @@ class BorrowResource extends Resource
                     ->formatStateUsing(fn ($state, $record) => $record?->user?->name ?? auth()->user()->name)
                     ->visible(fn () => ! auth()->user()->hasRole('super_admin')),
                 Forms\Components\Select::make('user_id')
-                    ->label('Select User')
+                    ->label('User')
                     ->relationship('user', 'name') // pastikan ada relasi `user()`
                     ->searchable()
                     ->preload()
                     ->visible(fn () => auth()->user()->hasRole('super_admin')),                  
-                Forms\Components\DateTimePicker::make('borrow_time')
-                    ->required()
-                    ->readOnly()
-                    ->default(now()),
                 Forms\Components\Select::make('item_id')
-                    ->label('Name Item')
+                    ->label('Item Name')
                     ->relationship(
                         name: 'item',
                         titleAttribute: 'item_name',
-                        modifyQueryUsing: fn ($query) => $query->where('status', 'available'),
+                        modifyQueryUsing: fn ($query) => $query->where('status', 'Available'),
                     )                    
                     ->required()
                     ->searchable()
@@ -99,7 +96,7 @@ class BorrowResource extends Resource
                     ->options(
                         \App\Models\LabUsage::query()
                             ->whereDate('created_at', now())       // hanya yang dibuat hari ini
-                            ->where('status', '!=', 'complete')    // exclude yang sudah complete
+                            ->where('status', '!=', 'Complete')    // exclude yang sudah complete
                             ->pluck('num_lab', 'id')
                             ->map(fn ($num) => "Lab {$num}")
                     )
@@ -117,19 +114,23 @@ class BorrowResource extends Resource
                             if ($inventoryId) {
                                 $inventory = Inventory::find($inventoryId);
                                 if ($inventory && $value > $inventory->quantity) {
-                                    $fail("Borrowed quantity cannot exceed available stock. ({$inventory->quantity}).");
+                                    $fail("Borrowed quantity cannot exceed Available stock. ({$inventory->quantity}).");
                                 }
                             }
                         },
                     ] : []),
                 Forms\Components\Hidden::make('status')
-                    ->default('pending')
+                    ->default('Pending')
                     ->visibleOn('create'),
+                Forms\Components\DateTimePicker::make('borrow_time')
+                    ->required()
+                    ->readOnly()
+                    ->default(now()),
                 Forms\Components\Select::make('status')
                     ->options([
-                        'pending'   => 'Pending',
-                        'active'    => 'Active',
-                        'finished'  => 'Finished',
+                        'Pending'   => 'Pending',
+                        'Active'    => 'Active',
+                        'Finished'  => 'Finished',
                     ])
                     ->visibleOn('edit')
                     ->required(),
@@ -145,9 +146,23 @@ class BorrowResource extends Resource
                     ->placeholder("Invalid or deleted user")
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('item.item_name')
+                    ->placeholder('Invalid or deleted item')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->placeholder('No Quantity')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('labusage.num_lab')
+                    ->placeholder('Invalid or deleted labusage')
+                    ->label('Location')
+                    ->formatStateUsing(fn ($state) => "Lab {$state}")
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')
                     ->color(fn ($record) =>
-                        $record->status !== 'finished'
+                        $record->status !== 'Finished'
                         && Carbon::parse($record->borrow_time)->lt(now()->subDay())
                             ? 'danger'
                             : null
@@ -159,27 +174,13 @@ class BorrowResource extends Resource
                     ->placeholder('Not Returned Yet')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('labusage.num_lab')
-                    ->placeholder('Invalid or deleted labusage')
-                    ->label('Location')
-                    ->formatStateUsing(fn ($state) => "Lab {$state}")
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('item.item_name')
-                    ->placeholder('Invalid or deleted item')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->placeholder('No Quantity')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->placeholder('Invalid Status')
                     ->badge()
                     ->colors([
-                        'warning' => 'pending',
-                        'success' => 'active',
-                        'primary'    => 'finished',
+                        'warning' => 'Pending',
+                        'success' => 'Active',
+                        'primary'    => 'Finished',
                     ])
                     ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->searchable(),
@@ -217,8 +218,8 @@ class BorrowResource extends Resource
                     Tables\Actions\Action::make('Update Status')
                         ->action(function ($record) {
                             $next = match ($record->status) {
-                                'pending' => 'active',
-                                'active'  => 'finished',
+                                'Pending' => 'Active',
+                                'Active'  => 'Finished',
                                 default   => $record->status, // kalau sudah finished, biarin
                             };
                         
@@ -242,8 +243,8 @@ class BorrowResource extends Resource
                                 ->sendToDatabase($user);
                         })
                         ->tooltip(fn ($record) => match ($record->status) {
-                            'pending' => 'Set to Active',
-                            'active'  => 'Set to Finished',
+                            'Pending' => 'Set to Active',
+                            'Active'  => 'Set to Finished',
                             default   => 'Status is Finished',
                         })
                         ->requiresConfirmation()
@@ -261,13 +262,11 @@ class BorrowResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                        ->visible(fn () => auth()->user()->can('export_borrow'))
                         ->exports([
-                            ExcelExport::make('table')
-                                ->fromTable()
-                                ->withFilename(fn ($resource, $livewire, $model) =>
-                                    sprintf('%s-%s', $model::query()->getModel()->getTable(), now()->format('Ymd'))
-                                ),
+                            BorrowCustomExport::make('selected')
+                                // ->fromTable()
+                                ->modifyQueryUsing(fn ($q) => $q->with('item')),
                         ]),
                 ]),
             ]);

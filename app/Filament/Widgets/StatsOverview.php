@@ -15,11 +15,15 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-           Stat::make('Inventories Total Stock', $this->getTotalInventory())
+           Stat::make(
+            auth()->user()->hasRole('super_admin')
+            ? 'Total Inventory Stock'
+            : 'Total Inventory Available Stock'
+            , $this->getTotalInventory())
                 ->description(
                     auth()->user()->can('view_any_inventory')
                         ? 'Press for details'
-                        : 'Showing total stock'
+                        : 'Showing total available stock'
                 )      
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('primary')
@@ -59,55 +63,75 @@ class StatsOverview extends BaseWidget
 
     private function getTotalInventory(): string
     {
-        $total = Inventory::sum('quantity');
+        $query = Inventory::query();
+
+        // Kalau bukan admin, filter hanya status available
+        if (!auth()->user()->hasRole('super_admin')) {
+            $query->where('status', 'Available');
+        }
+
+        $total = $query->sum('quantity');
 
         if ($total >= 1000) {
             return number_format($total / 1000, 1) . 'k';
         }
-        
+
         return number_format($total);
     }
 
     private function getBarangDipinjam(): string
     {
+        $query = Borrow::query();
+
+        // // Kalau bukan super_admin, filter hanya data milik user sendiri
+        // if (!auth()->user()->hasRole('super_admin')) {
+        //     $query->where('user_id', auth()->id());
+        // }
+
         // Debug: Cek semua status yang ada di tabel Borrow
         // Uncomment baris ini untuk debug di log
         // \Log::info('Borrow statuses:', Borrow::distinct('status')->pluck('status')->toArray());
-        
+
         // Coba berbagai kemungkinan nilai status
-        $dipinjam = Borrow::where(function ($query) {
-            $query->where('status', 'pending')
-                  ->orWhere('status', 'active')
-                  ->orWhere('status', 'finished');
-        })
-        // Tambahan: pastikan belum dikembalikan
-        ->where(function ($query) {
-            $query->whereNull('return_time')
+        $dipinjam = $query->where(function ($q) {
+                $q->where('status', 'Pending')
+                  ->orWhere('status', 'Active');
+            })
+            // Tambahan: pastikan belum dikembalikan
+            ->where(function ($q) {
+                $q->whereNull('return_time')
                   ->orWhere('return_time', '>', now());
-        })
-        ->sum("quantity");
-        
+            })
+            ->sum("quantity");
+
         // Jika masih 0, coba hitung semua record untuk debug
         if ($dipinjam == 0) {
-            $total_borrows = Borrow::count();
+            $fallbackQuery = Borrow::query();
+
+            // if (!auth()->user()->hasRole('super_admin')) {
+            //     $fallbackQuery->where('user_id', auth()->id());
+            // }
+
+            $total_borrows = $fallbackQuery->count();
             // Uncomment untuk debug
             // \Log::info("Total Borrow records: $total_borrows");
-            
+
             // Coba hitung yang belum dikembalikan saja
-            $dipinjam = Borrow::whereNull('return_time')->count();
-            
+            $dipinjam = $fallbackQuery->whereNull('return_time')->count();
+
             // Jika masih 0, tampilkan total untuk sementara
             if ($dipinjam == 0) {
                 $dipinjam = $total_borrows;
             }
         }
-        
+
         // Format angka
         if ($dipinjam >= 1000) {
             return number_format($dipinjam / 1000, 1) . 'k';
         }
         return number_format($dipinjam);
     }
+
 
     private function getMaintenance(): string
     {
