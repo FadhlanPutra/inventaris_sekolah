@@ -18,7 +18,7 @@ use Filament\Models\Concerns\SendsFilamentPasswordResetNotification;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerifyEmail
 {
     use HasFactory, Notifiable, HasRoles, ClearsResponseCache, LogsActivity;
 
