@@ -16,11 +16,11 @@ class BorrowCustomExport extends ExcelExport
             ->withColumns([
                 Column::make('id')->heading('ID'),
 
-                Column::make('labusage_id')
+                Column::make('location_id')
                     ->heading('Location')
                     ->formatStateUsing(fn ($state, $record) =>
-                        $record->labusage
-                            ? "Lab " . $record->labusage->num_lab
+                        $record->location
+                            ? $record->location->name
                             : '-'
                     ),
 

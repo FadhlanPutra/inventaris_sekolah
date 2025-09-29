@@ -46,6 +46,9 @@ return [
             'delete_any',
             'force_delete',
             'force_delete_any',
+
+            'export',
+            'import',
         ],
 
         'page' => 'page',

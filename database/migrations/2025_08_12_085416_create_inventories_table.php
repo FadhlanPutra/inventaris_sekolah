@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('item_name')->unique();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->foreignId('location_id')->nullable()->constrained('locations')->onDelete('set null');
             $table->integer('quantity')->default(1);
             $table->enum('status', ['Available', 'Unavailable'])->default('Available');
             $table->text('desc')->nullable();

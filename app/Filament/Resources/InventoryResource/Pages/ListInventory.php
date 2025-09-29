@@ -44,7 +44,7 @@ class ListInventory extends ListRecords
                         InventoryCustomExport::make()
                             ->fromModel(Inventory::class)
                             ->modifyQueryUsing(fn ($query) => 
-                                $query->with(['category'])
+                                $query->with(['category', 'location'])
                                       ->where('created_at', '>=', now()->subMonth())
                             ),
                     ])
@@ -138,6 +138,46 @@ class ListInventory extends ListRecords
                     throw new \Exception("Category tidak boleh kosong. Silakan isi kolom category dengan nama kategori atau ID kategori yang valid.");
                 }
             
+                // ====== Handle LOCATION mirip CATEGORY ======
+                $rawLocation = $data['location'] ?? $data['Location'] ?? $data['location_id'] ?? $data['Location_ID'] ?? null;
+
+                if ($rawLocation !== null && trim((string) $rawLocation) !== '') {
+                    $rawLocation = trim((string) $rawLocation);
+
+                    if (is_numeric($rawLocation)) {
+                        $location = \App\Models\Location::find((int) $rawLocation);
+                        if (!$location) {
+                            try {
+                                $location = \App\Models\Location::create([
+                                    'name' => (string) $rawLocation,
+                                ]);
+                            } catch (\Exception $e) {
+                                Log::error("Gagal membuat location baru: " . $e->getMessage());
+                                throw new \Exception("Gagal membuat location baru: " . $e->getMessage());
+                            }
+                        }
+                    } else {
+                        $location = \App\Models\Location::whereRaw(
+                            'LOWER(name) = ?',
+                            [strtolower($rawLocation)]
+                        )->first();
+
+                        if (!$location) {
+                            try {
+                                $location = \App\Models\Location::create([
+                                    'name' => $rawLocation,
+                                ]);
+                            } catch (\Exception $e) {
+                                Log::error("Gagal membuat location baru: " . $e->getMessage());
+                                throw new \Exception("Gagal membuat location baru: " . $e->getMessage());
+                            }
+                        }
+                    }
+
+                    $data['location_id'] = $location->id;
+                    Log::info("Location ID berhasil di-set: {$location->id}");
+                }
+
                 // Perbaiki field lain yang mungkin tidak sesuai
                 if (isset($data['quantity']) && empty($data['quantity'])) {
                     $data['quantity'] = 1; // Default quantity jika kosong
@@ -164,6 +204,7 @@ class ListInventory extends ListRecords
                 $finalData = [
                     'item_name' => $data['item_name'] ?? '',
                     'category_id' => $data['category_id'] ?? null,
+                    'location_id' => $data['location_id'] ?? null,
                     'quantity' => $data['quantity'] ?? 1,
                     'status' => $data['status'] ?? 'Available',
                     'desc' => $data['description'] ?? $data['desc'] ?? '',
@@ -205,6 +246,28 @@ class ListInventory extends ListRecords
                     // Log::info("Category ID di-set ulang: {$category->id}");
                 }
 
+                // Resolve location dengan pola yang sama
+                $rawLocation = $data['location'] ?? $data['Location'] ?? $data['location_id'] ?? $data['Location_ID'] ?? null;
+
+                if ($rawLocation !== null && trim((string) $rawLocation) !== '') {
+                    $rawLocation = trim((string) $rawLocation);
+
+                    if (is_numeric($rawLocation)) {
+                        $location = \App\Models\Location::find((int) $rawLocation);
+                        if (!$location) {
+                            $location = \App\Models\Location::create(['name' => (string) $rawLocation]);
+                        }
+                    } else {
+                        $location = \App\Models\Location::whereRaw('LOWER(name) = ?', [strtolower($rawLocation)])->first();
+                        if (!$location) {
+                            $location = \App\Models\Location::create(['name' => $rawLocation]);
+                        }
+                    }
+
+                    $data['location_id'] = $location->id;
+                    // Log::info("Location ID di-set ulang: {$location->id}");
+                }
+
                 // Normalisasi status lagi untuk memastikan konsistensi
                 $status = $data['status'] ?? 'Available';
                 if (is_string($status)) {
@@ -220,6 +283,7 @@ class ListInventory extends ListRecords
                 $mappedData = [
                     'item_name' => $data['item_name'] ?? '',
                     'category_id' => $data['category_id'] ?? null,
+                    'location_id' => $data['location_id'] ?? null,
                     'quantity' => $data['quantity'] ?? 1,
                     'status' => $status,
                     'desc' => $data['description'] ?? $data['desc'] ?? '',
@@ -233,6 +297,7 @@ class ListInventory extends ListRecords
             ->validateUsing([
                 'item_name' => 'required|unique:inventories,item_name',
                 'category_id' => 'required|exists:categories,id',
+                'location_id' => 'nullable|exists:locations,id',
                 'quantity' => 'required|integer|min:1',
                 'status' => 'required|in:Available,Unavailable',
                 'desc' => 'nullable',

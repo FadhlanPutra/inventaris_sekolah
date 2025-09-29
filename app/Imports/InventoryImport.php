@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Inventory;
 use App\Models\Category;
+use App\Models\Location;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -29,31 +30,39 @@ class InventoryImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
     {
         Log::info('Processing row:', $row);
 
-        // Handle category_id
+        // Handle category_id & location_id
         $categoryId = $this->resolveCategoryId($row);
-        
+        $locationId = $this->resolveLocationId($row);
+
         if (!$categoryId) {
             Log::error('Category ID tidak dapat diselesaikan untuk row:', $row);
             throw new \Exception("Category tidak valid untuk item: " . ($row['item_name'] ?? 'Unknown'));
+        } elseif (!$locationId) { // ✅ fix disini
+            Log::error('Location ID tidak dapat diselesaikan untuk row:', $row);
+            throw new \Exception("Location tidak valid untuk item: " . ($row['item_name'] ?? 'Unknown'));
         }
 
-        return new Inventory([
-            'item_name'   => $row['item_name'] ?? $row['item_name'] ?? '',
+        $inventory = new Inventory([
+            'item_name'   => $row['item_name'] ?? '',
             'category_id' => $categoryId,
-            'quantity'    => $row['quantity'] ?? $row['quantity'] ?? 0,
-            'status'      => $row['status'] ?? $row['status'] ?? 'Available',
-            'desc'        => $row['desc'] ?? $row['description'] ?? $row['desc'] ?? '',
+            'location_id' => $locationId,
+            'quantity'    => $row['quantity'] ?? 0,
+            'status'      => $row['status'] ?? 'Available',
+            'desc'        => $row['desc'] ?? $row['description'] ?? '',
         ]);
+
+        Log::info('Model Inventory saving:', $inventory->toArray());
+
+        return $inventory;
     }
 
     /**
-     * Resolve category ID from various possible formats
+     * Resolve category ID
      */
     private function resolveCategoryId(array $row): ?int
     {
-        // Coba berbagai kemungkinan nama field untuk category
         $raw = $row['category'] ?? $row['Category'] ?? $row['category_id'] ?? $row['Category_ID'] ?? null;
-        
+
         Log::info('Raw category data:', ['raw' => $raw, 'row' => $row]);
 
         if (!$raw || trim($raw) === '') {
@@ -62,49 +71,77 @@ class InventoryImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         }
 
         $raw = trim($raw);
-        
-        // Jika berupa angka, cek apakah ada di tabel category sebagai id
+
         if (is_numeric($raw)) {
             $category = Category::find((int) $raw);
-            
             if (!$category) {
-                // Jika tidak ada, buat category baru dengan nama berdasarkan id
                 try {
-                    $category = Category::create([
-                        'name' => "Kategori $raw",
-                    ]);
+                    $category = Category::create(['name' => "Kategori $raw"]);
                     Log::info("Category baru dibuat dengan ID: {$category->id}, nama: {$category->name}");
                 } catch (\Exception $e) {
                     Log::error("Gagal membuat category baru: " . $e->getMessage());
                     return null;
                 }
-            } else {
-                Log::info("Category ditemukan dengan ID: {$category->id}, nama: {$category->name}");
             }
         } else {
-            // Jika berupa string, cari berdasarkan nama (case-insensitive)
-            $category = Category::whereRaw(
-                'LOWER(name) = ?',
-                [strtolower($raw)]
-            )->first();
-
+            $category = Category::whereRaw('LOWER(name) = ?', [strtolower($raw)])->first();
             if (!$category) {
-                // Jika tidak ada, buat category baru
                 try {
-                    $category = Category::create([
-                        'name' => $raw,
-                    ]);
+                    $category = Category::create(['name' => $raw]);
                     Log::info("Category baru dibuat dengan ID: {$category->id}, nama: {$category->name}");
                 } catch (\Exception $e) {
                     Log::error("Gagal membuat category baru: " . $e->getMessage());
                     return null;
                 }
-            } else {
-                Log::info("Category ditemukan dengan ID: {$category->id}, nama: {$category->name}");
             }
         }
 
+        Log::info("Category ID berhasil di-set: {$category->id}");
         return $category->id;
+    }
+
+    /**
+     * Resolve location ID
+     */
+    private function resolveLocationId(array $row): ?int
+    {
+        $raw = $row['location'] ?? $row['Location'] ?? $row['location_id'] ?? $row['Location_ID'] ?? null;
+
+        Log::info('Raw location data:', ['raw' => $raw, 'row' => $row]);
+
+        if (!$raw || trim($raw) === '') {
+            Log::warning('Location kosong atau null');
+            return null;
+        }
+
+        $raw = trim($raw);
+
+        if (is_numeric($raw)) {
+            $location = Location::find((int) $raw);
+            if (!$location) {
+                try {
+                    $location = Location::create(['name' => "Lokasi $raw"]);
+                    Log::info("Location baru dibuat dengan ID: {$location->id}, nama: {$location->name}");
+                } catch (\Exception $e) {
+                    Log::error("Gagal membuat location baru: " . $e->getMessage());
+                    return null;
+                }
+            }
+        } else {
+            $location = Location::whereRaw('LOWER(name) = ?', [strtolower($raw)])->first();
+            if (!$location) {
+                try {
+                    $location = Location::create(['name' => $raw]);
+                    Log::info("Location baru dibuat dengan ID: {$location->id}, nama: {$location->name}");
+                } catch (\Exception $e) {
+                    Log::error("Gagal membuat location baru: " . $e->getMessage());
+                    return null;
+                }
+            }
+        }
+
+        Log::info("Location ID berhasil di-set: {$location->id}");
+        return $location->id;
     }
 
     /**
@@ -135,17 +172,11 @@ class InventoryImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         ];
     }
 
-    /**
-     * Batch size for inserts
-     */
     public function batchSize(): int
     {
         return 100;
     }
 
-    /**
-     * Chunk size for reading
-     */
     public function chunkSize(): int
     {
         return 100;

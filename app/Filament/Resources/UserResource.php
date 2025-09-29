@@ -27,7 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Users';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 5; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 8; // angka kecil = lebih depan
 
     // 4. Grup navigasi
     protected static ?string $navigationGroup = 'Users';

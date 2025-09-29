@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('item_id')->nullable()->constrained('inventories')->onDelete('set null');
             $table->integer('quantity');
-            $table->foreignId('labusage_id')->nullable()->constrained('lab_usages')->onDelete('set null');
+            $table->foreignId('location_id')->nullable()->constrained('locations')->onDelete('set null');
             $table->dateTime('borrow_time');
             $table->dateTime('return_time')->nullable();
             $table->enum('status', ['Pending', 'Active', 'Finished'])->default('Pending');

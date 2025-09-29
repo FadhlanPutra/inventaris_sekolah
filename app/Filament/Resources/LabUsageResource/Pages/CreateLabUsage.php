@@ -26,7 +26,7 @@ class CreateLabUsage extends CreateRecord
         Notification::make()
             ->title('Lab Usage Notification')
             ->info()
-            ->body("<strong>Lab {$record->num_lab}</strong> has been reserved for your class <strong>{$record->class_name}</strong>.")
+            ->body("<strong>Lab {$record->num_lab}</strong> has been reserved for your class <strong>{$record->grade->id}</strong>.")
             ->actions([
                 Action::make('view')
                 ->button()

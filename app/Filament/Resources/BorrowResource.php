@@ -35,7 +35,7 @@ class BorrowResource extends Resource
     protected static ?string $navigationLabel = 'Borrow';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 4; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 6; // angka kecil = lebih depan
 
     // 4. Grup navigasi
     // protected static ?string $navigationGroup = 'Manajemen';
@@ -90,18 +90,11 @@ class BorrowResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
-                Forms\Components\Select::make('labusage_id')
+                Forms\Components\Select::make('location_id')
                     ->label('Location')
-                    ->hint('Only shows labs used and active today')
-                    ->options(
-                        \App\Models\LabUsage::query()
-                            ->whereDate('created_at', now())       // hanya yang dibuat hari ini
-                            ->where('status', '!=', 'Complete')    // exclude yang sudah complete
-                            ->pluck('num_lab', 'id')
-                            ->map(fn ($num) => "Lab {$num}")
-                    )
                     ->required()
                     ->searchable()
+                    ->relationship(name: 'location', titleAttribute: 'name')
                     ->preload(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
@@ -156,10 +149,10 @@ class BorrowResource extends Resource
                     ->placeholder('No Quantity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('labusage.num_lab')
+                Tables\Columns\TextColumn::make('location.name')
                     ->placeholder('Invalid or deleted labusage')
                     ->label('Location')
-                    ->formatStateUsing(fn ($state) => "Lab {$state}")
+                    // ->formatStateUsing(fn ($state) => "Lab {$state}")
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('borrow_time')

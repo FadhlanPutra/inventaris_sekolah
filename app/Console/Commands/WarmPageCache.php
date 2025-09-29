@@ -32,6 +32,8 @@ class WarmPageCache extends Command
             route('filament.dashboard.resources.shield.roles.index'),
             route('filament.dashboard.resources.users.index'),
             route('filament.dashboard.resources.activitylogs.index'),
+            route('filament.dashboard.resources.locations.index'),
+            route('filament.dashboard.resources.grades.index'),
 
             route('filament.dashboard.resources.borrows.create'),
             route('filament.dashboard.resources.categories.create'),
@@ -40,13 +42,15 @@ class WarmPageCache extends Command
             route('filament.dashboard.resources.maintenances.create'),
             route('filament.dashboard.resources.shield.roles.create'),
             route('filament.dashboard.resources.users.create'),
+            route('filament.dashboard.resources.locations.create'),
+            route('filament.dashboard.resources.grades.create'),
             
             route('filament.dashboard.pages.themes'),
             route('filament.dashboard.pages.edit-profile'),
 
-            url('flux/flux.js'),
-            url('flux/flux.min.js'),
-            url('livewire/livewire.js'),
+            // url('flux/flux.js'),
+            // url('flux/flux.min.js'),
+            // url('livewire/livewire.js'),
 
             url('images/logo.png'),
             url('images/logo_x.png'),
