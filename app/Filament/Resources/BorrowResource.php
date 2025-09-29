@@ -115,9 +115,11 @@ class BorrowResource extends Resource
                 Forms\Components\Hidden::make('status')
                     ->default('Pending')
                     ->visibleOn('create'),
-                Forms\Components\DateTimePicker::make('borrow_time')
+                Forms\Components\DatePicker::make('borrow_time')
                     ->required()
                     ->readOnly()
+                    ->native(false)
+                    ->displayFormat('j M, Y') 
                     ->default(now()),
                 Forms\Components\Select::make('status')
                     ->options([
@@ -161,11 +163,11 @@ class BorrowResource extends Resource
                             : null
                     )
                     ->placeholder('No Borrow Time')
-                    ->dateTime()
+                    ->date('j M, Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_time')
                     ->placeholder('Not Returned Yet')
-                    ->dateTime()
+                    ->date('j M, Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->placeholder('Invalid Status')

@@ -82,7 +82,7 @@ class UserResource extends Resource
                     ->placeholder('No Email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                    ->date('j M, Y')
                     ->placeholder('Not Verified')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')

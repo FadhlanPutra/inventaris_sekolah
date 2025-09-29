@@ -102,12 +102,12 @@ class MaintenanceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Start At')
-                    ->dateTime()
+                    ->date('j M, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Finished At')
-                    ->dateTime()
+                    ->date('j M, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
             ])

@@ -104,7 +104,7 @@ class RoleResource extends Resource implements HasShieldPermissions
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('filament-shield::filament-shield.column.updated_at'))
-                    ->dateTime(),
+                    ->date('j M, Y'),
             ])
             ->filters([
                 //
@@ -162,9 +162,10 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationGroup(): ?string
     {
-        return Utils::isResourceNavigationGroupEnabled()
-            ? __('filament-shield::filament-shield.nav.group')
-            : '';
+        // return Utils::isResourceNavigationGroupEnabled()
+        //     ? __('filament-shield::filament-shield.nav.group')
+        //     : '';
+        return static::$navigationGroup;
     }
 
     public static function getNavigationLabel(): string

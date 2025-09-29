@@ -388,7 +388,8 @@ class ActivitylogResource extends Resource
     {
         $column = TextColumn::make('created_at')
             ->label(__('activitylog::tables.columns.created_at.label'))
-            ->dateTime(ActivitylogPlugin::get()->getDatetimeFormat())
+            // ->dateTime(ActivitylogPlugin::get()->getDatetimeFormat())
+            ->date('j M, Y')
             ->searchable()
             ->sortable();
 
