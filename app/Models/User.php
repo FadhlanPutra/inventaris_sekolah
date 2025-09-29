@@ -18,7 +18,7 @@ use Filament\Models\Concerns\SendsFilamentPasswordResetNotification;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable, HasRoles, ClearsResponseCache, LogsActivity;
 
@@ -54,6 +54,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         static::updating(function (User $user) {
             if ($user->isDirty('email')) {
                 $user->email_verified_at = null;
+            }
+        });
+
+         static::creating(function (User $user) {
+            if (!$user->hasRole('siswa')) {
+            }
+        });
+
+        static::created(function (User $user) {
+            if (!$user->hasRole('siswa')) {
+                $user->assignRole('siswa');
             }
         });
     }

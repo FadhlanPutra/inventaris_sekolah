@@ -184,7 +184,7 @@ class LabUsageResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Used At')
-                    ->dateTime()
+                    ->date('j M, Y')    
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
