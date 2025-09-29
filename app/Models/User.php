@@ -57,12 +57,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             }
         });
 
-         static::creating(function (User $user) {
+        static::creating(function (User $user) {
             if (!$user->hasRole('siswa')) {
             }
         });
 
         static::created(function (User $user) {
+            \Spatie\Permission\Models\Role::firstOrCreate([
+                'name' => 'siswa',
+                'guard_name' => 'web',
+            ]); // Fungsinya mencegah error saat test
+
             if (!$user->hasRole('siswa')) {
                 $user->assignRole('siswa');
             }
