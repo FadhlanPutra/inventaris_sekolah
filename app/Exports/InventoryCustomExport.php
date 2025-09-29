@@ -26,6 +26,13 @@ class InventoryCustomExport extends ExcelExport
                     ),
 
                 Column::make('quantity')->heading('Quantity'),
+                Column::make('location_id')
+                    ->heading('Location')
+                    ->formatStateUsing(fn ($state, $record) =>
+                        $record->location 
+                            ? $record->location->name 
+                            : '-'
+                    ),
                 Column::make('status')->heading('Status'),
                 Column::make('desc')->heading('Description'),
                 Column::make('created_at')->heading('Created At'),

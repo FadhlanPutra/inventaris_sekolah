@@ -24,6 +24,7 @@ class Inventory extends Model
     protected $fillable = [
         'item_name',
         'category_id',
+        'location_id',
         'quantity',
         'status',
         'desc',
@@ -90,6 +91,10 @@ class Inventory extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function maintenances(): HasMany

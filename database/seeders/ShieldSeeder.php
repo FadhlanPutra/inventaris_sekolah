@@ -30,36 +30,59 @@ class ShieldSeeder extends Seeder
             "name": "super_admin",
             "guard_name": "web",
             "permissions": [
-              "view_borrow", "view_any_borrow", "create_borrow", "update_borrow", "restore_borrow",
-              "restore_any_borrow", "replicate_borrow", "reorder_borrow", "delete_borrow", "delete_any_borrow",
-              "force_delete_borrow", "force_delete_any_borrow",
+                "view_activitylog", "view_any_activitylog", "create_activitylog", "update_activitylog",
+                "restore_activitylog", "restore_any_activitylog", "replicate_activitylog", "reorder_activitylog",
+                "delete_activitylog", "delete_any_activitylog", "force_delete_activitylog", "force_delete_any_activitylog",
+                "export_activitylog", "import_activitylog",
 
-              "view_category", "view_any_category", "create_category", "update_category", "restore_category",
-              "restore_any_category", "replicate_category", "reorder_category", "delete_category", "delete_any_category",
-              "force_delete_category", "force_delete_any_category",
+                "view_borrow", "view_any_borrow", "create_borrow", "update_borrow",
+                "restore_borrow", "restore_any_borrow", "replicate_borrow", "reorder_borrow",
+                "delete_borrow", "delete_any_borrow", "force_delete_borrow", "force_delete_any_borrow",
+                "export_borrow", "import_borrow",
 
-              "view_inventory", "view_any_inventory", "create_inventory", "update_inventory", "restore_inventory",
-              "restore_any_inventory", "replicate_inventory", "reorder_inventory", "delete_inventory", "delete_any_inventory",
-              "force_delete_inventory", "force_delete_any_inventory",
+                "view_category", "view_any_category", "create_category", "update_category",
+                "restore_category", "restore_any_category", "replicate_category", "reorder_category",
+                "delete_category", "delete_any_category", "force_delete_category", "force_delete_any_category",
+                "export_category", "import_category",
 
-              "view_lab::usage", "view_any_lab::usage", "create_lab::usage", "update_lab::usage", "restore_lab::usage",
-              "restore_any_lab::usage", "replicate_lab::usage", "reorder_lab::usage", "delete_lab::usage",
-              "delete_any_lab::usage", "force_delete_lab::usage", "force_delete_any_lab::usage",
+                "view_grade", "view_any_grade", "create_grade", "update_grade",
+                "restore_grade", "restore_any_grade", "replicate_grade", "reorder_grade",
+                "delete_grade", "delete_any_grade", "force_delete_grade", "force_delete_any_grade",
+                "export_grade", "import_grade",
 
-              "view_maintenance", "view_any_maintenance", "create_maintenance", "update_maintenance", "restore_maintenance",
-              "restore_any_maintenance", "replicate_maintenance", "reorder_maintenance", "delete_maintenance", "delete_any_maintenance",
-              "force_delete_maintenance", "force_delete_any_maintenance",
+                "view_inventory", "view_any_inventory", "create_inventory", "update_inventory",
+                "restore_inventory", "restore_any_inventory", "replicate_inventory", "reorder_inventory",
+                "delete_inventory", "delete_any_inventory", "force_delete_inventory", "force_delete_any_inventory",
+                "export_inventory", "import_inventory",
 
-              "view_shield::role", "view_any_shield::role", "create_shield::role", "update_shield::role", "delete_shield::role", "delete_any_shield::role",
+                "view_lab::usage", "view_any_lab::usage", "create_lab::usage", "update_lab::usage",
+                "restore_lab::usage", "restore_any_lab::usage", "replicate_lab::usage", "reorder_lab::usage",
+                "delete_lab::usage", "delete_any_lab::usage", "force_delete_lab::usage", "force_delete_any_lab::usage",
+                "export_lab::usage", "import_lab::usage",
 
-              "view_user", "view_any_user", "create_user", "update_user", "restore_user", "restore_any_user",
-              "replicate_user", "reorder_user", "delete_user", "delete_any_user", "force_delete_user", "force_delete_any_user",
+                "view_location", "view_any_location", "create_location", "update_location",
+                "restore_location", "restore_any_location", "replicate_location", "reorder_location",
+                "delete_location", "delete_any_location", "force_delete_location", "force_delete_any_location",
+                "export_location", "import_location",
 
-              "widget_ChartsDuo", "widget_StatsOverview", "widget_BlogPostsChart", "widget_BlogPosts2Chart",
+                "view_maintenance", "view_any_maintenance", "create_maintenance", "update_maintenance",
+                "restore_maintenance", "restore_any_maintenance", "replicate_maintenance", "reorder_maintenance",
+                "delete_maintenance", "delete_any_maintenance", "force_delete_maintenance", "force_delete_any_maintenance",
+                "export_maintenance", "import_maintenance",
 
-              "page_EditProfilePage", "page_Themes",
+                "view_shield::role", "view_any_shield::role", "create_shield::role", "update_shield::role",
+                "delete_shield::role", "delete_any_shield::role",
 
-              "export_category", "export_inventory", "export_borrow", "export_maintenance", "export_lab::usage", "import_inventory", "access_log"
+                "view_user", "view_any_user", "create_user", "update_user",
+                "restore_user", "restore_any_user", "replicate_user", "reorder_user",
+                "delete_user", "delete_any_user", "force_delete_user", "force_delete_any_user",
+                "export_user", "import_user",
+
+                "widget_ChartsDuo", "widget_StatsOverview", "widget_BlogPostsChart", "widget_BlogPosts2Chart",
+
+                "page_EditProfilePage", "page_Themes",
+
+                "access_log"
             ]
           },
           {

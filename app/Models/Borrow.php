@@ -20,7 +20,7 @@ class Borrow extends Model
         'user_id', 
         'item_id', 
         'quantity', 
-        'labusage_id', 
+        'location_id', 
         'borrow_time', 
         'return_time', 
         'status'
@@ -38,6 +38,10 @@ class Borrow extends Model
     public function labusage(): BelongsTo
     {
         return $this->belongsTo(LabUsage::class);
+    }
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function user(): BelongsTo

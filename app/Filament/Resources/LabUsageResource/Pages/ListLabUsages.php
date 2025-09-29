@@ -26,7 +26,7 @@ class ListLabUsages extends ListRecords
                 ->exports([
                     LabUsageCustomExport::make()
                         ->fromModel(LabUsage::class)
-                        ->modifyQueryUsing(fn ($q) => $q->with('user')),
+                        ->modifyQueryUsing(fn ($q) => $q->with('user', 'location')),
                 ])
                 ->extraAttributes([
                     // styling item di dropdown: no bg, margin, padding, gap, dll

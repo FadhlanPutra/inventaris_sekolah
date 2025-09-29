@@ -34,7 +34,7 @@ class InventoryResource extends Resource
     protected static ?string $navigationLabel = 'Inventory';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 2; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 3; // angka kecil = lebih depan
 
     protected function getHeaderActions(): array
     {
@@ -76,6 +76,12 @@ class InventoryResource extends Resource
                     ->placeholder(1)
                     ->live()
                     ->minValue(0),
+                Forms\Components\Select::make('location_id')
+                    ->label('Location')
+                    ->searchable()
+                    ->preload()
+                    ->relationship(name: 'location', titleAttribute: 'name')
+                    ->required(),
                 Forms\Components\Select::make('status')
                     ->label('Borrowable')
                     ->hint('Can it be borrowed?')
@@ -116,6 +122,11 @@ class InventoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')->label('Category')
                     ->placeholder('Invalid or deleted category')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('location.name')
+                    ->label('Location')
+                    ->placeholder('Invalid or deleted location')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')

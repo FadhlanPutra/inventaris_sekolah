@@ -37,7 +37,7 @@ class LabUsageResource extends Resource
     protected static ?string $navigationLabel = 'Lab Usage';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 3; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 5; // angka kecil = lebih depan
 
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
@@ -70,65 +70,17 @@ class LabUsageResource extends Resource
                     ->default(auth()->id())
                     ->required()
                     ->disabled(fn (string $context) => $context === 'edit'),
-                Forms\Components\Select::make('num_lab')
-                    ->label('Number Lab')
+                Forms\Components\Select::make('location_id')
+                    ->label('Location')
                     ->required()
-                    ->options(function ($get, $record) {
-                        $all = range(1, 6);
-                    
-                        // Ambil semua num_lab yang sudah dipakai HARI INI
-                        $used = LabUsage::whereDate('created_at', now()->toDateString())
-                            ->pluck('num_lab')
-                            ->toArray();
-                    
-                        // Tambahkan value lama record supaya tetap muncul
-                        if ($record?->num_lab) {
-                            $used = array_diff($used, [$record->num_lab]);
-                        }
-                    
-                        $available = array_diff($all, $used);
-                    
-                        // Tampilkan label "Lab X"
-                        return collect($available)
-                            ->mapWithKeys(fn ($num) => [$num => "Lab {$num}"])
-                            ->toArray();
-                    })
-                    ->placeholder('Select Lab Number'),
-                Forms\Components\Select::make('class_name')
-                    ->label('Class')
-                    ->hint('Shows classes not using the lab today')
-                    ->options(function ($record) {
-                        // daftar semua class
-                        $allClasses = [
-                            'X RPL'  => 'X RPL',
-                            'X DKV'  => 'X DKV',
-                            'X TKJ'  => 'X TKJ',
-                            'XI RPL' => 'XI RPL',
-                            'XI DKV' => 'XI DKV',
-                            'XI TKJ' => 'XI TKJ',
-                            'XII RPL'=> 'XII RPL',
-                            'XII DKV'=> 'XII DKV',
-                            'XII TKJ'=> 'XII TKJ',
-                        ];
-                    
-                        // ambil class yang sudah dipakai hari ini
-                        $used = LabUsage::whereDate('created_at', now()->toDateString())
-                            ->pluck('class_name')
-                            ->toArray();
-                    
-                        // kalau sedang edit, biar class lama tetap ada
-                        if ($record?->class_name) {
-                            $used = array_diff($used, [$record->class_name]);
-                        }
-                    
-                        // filter yang tersedia
-                        $available = array_diff(array_keys($allClasses), $used);
-                    
-                        // return hanya class yang tersedia
-                        return collect($allClasses)
-                            ->filter(fn ($label, $key) => in_array($key, $available))
-                            ->toArray();
-                    })
+                    ->searchable()
+                    ->preload()
+                    ->relationship(name: 'location', titleAttribute: 'name'),
+                    Forms\Components\Select::make('grade_id')
+                    ->label('Grade')
+                    ->searchable()
+                    ->preload()
+                    ->relationship(name: 'grade', titleAttribute: 'name')
                     ->placeholder('Select Class')
                     ->required(),
                 Forms\Components\TextInput::make('num_students')
@@ -156,17 +108,17 @@ class LabUsageResource extends Resource
                     ->label('Teacher')
                     ->placeholder("Invalid or deleted user")
                     ->searchable(),
-                Tables\Columns\TextColumn::make('num_lab')
+                Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->color(fn ($record) => $record->status === 'Complete' ? 'success' : 'danger')
                     ->formatStateUsing(function ($record) {
-                        $labNumber = $record->num_lab ? "Lab {$record->num_lab}" : 'Not Filled';
-                        $class = $record->class_name ?? 'Not Filled';
+                        $labNumber = $record->location->name ? "{$record->location->name}" : 'Not Filled';
+                        $grade = $record->grade->name ?? 'Not Filled';
                         $numStudents = $record->num_students ? "Students: {$record->num_students}" : 'Not Filled';
                         $status = ucfirst($record->status ?? 'Incomplete');
 
-                        return ("{$status} | {$labNumber} | {$class} | {$numStudents}");
+                        return ("{$status} | {$labNumber} | {$grade} | {$numStudents}");
                     }),
                 Tables\Columns\TextColumn::make('lab_function')
                     ->label('Lab Function')
@@ -210,16 +162,11 @@ class LabUsageResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     }),
-                Tables\Filters\SelectFilter::make('num_lab')
-                    ->label('Lab Number')
-                    ->options([
-                        1 => 'Lab 1',
-                        2 => 'Lab 2',
-                        3 => 'Lab 3',
-                        4 => 'Lab 4',
-                        5 => 'Lab 5',
-                        6 => 'Lab 6',
-                    ]),
+                Tables\Filters\SelectFilter::make('location_id')
+                    ->label('Location')
+                    ->preload()
+                    ->relationship('location', 'name')
+                    ->searchable(),
             ])
             ->actions([
                 ActionGroup::make([
@@ -231,20 +178,12 @@ class LabUsageResource extends Resource
                         ->color('success')
                         ->icon('heroicon-o-check-circle')
                         ->form([
-                            Select::make('class_name')
-                                ->label('Class')
-                                ->options([
-                                    'X RPL'  => 'X RPL',
-                                    'X DKV'  => 'X DKV',
-                                    'X TKJ'  => 'X TKJ',
-                                    'XI RPL' => 'XI RPL',
-                                    'XI DKV' => 'XI DKV',
-                                    'XI TKJ' => 'XI TKJ',
-                                    'XII RPL'=> 'XII RPL',
-                                    'XII DKV'=> 'XII DKV',
-                                    'XII TKJ'=> 'XII TKJ',
-                                ])
-                                ->default(fn ($record) => $record->class_name)
+                            Select::make('grade_id')
+                                ->label('Grade')
+                                ->relationship('grade', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->default(fn ($record) => $record->grade_id)
                                 ->required(),
                                 
                             TextInput::make('num_students')

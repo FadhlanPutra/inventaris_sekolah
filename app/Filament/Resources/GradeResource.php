@@ -4,46 +4,43 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Category;
+use App\Models\Grade;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Exports\GradeCustomExport;
 use Filament\Tables\Filters\Filter;
-use App\Exports\CategoryCustomExport;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
-use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\GradeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use App\Filament\Resources\CategoryResource\RelationManagers;
+use App\Filament\Resources\GradeResource\RelationManagers;
 
-class CategoryResource extends Resource
+class GradeResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = Grade::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag'; // ikon biasa
-    protected static ?string $activeNavigationIcon = 'heroicon-s-tag'; // ikon ketika aktif
+    protected static ?string $navigationIcon = 'heroicon-o-book-open'; // ikon biasa
+    protected static ?string $activeNavigationIcon = 'heroicon-s-book-open'; // ikon ketika aktif
 
     // 2. Label navigasi
-    protected static ?string $navigationLabel = 'Category';
+    protected static ?string $navigationLabel = 'Grade';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 1; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 4; // angka kecil = lebih depan
 
-    // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
     {
         // return Borrow::where('status', 'Pending')->count();
         return static::getModel()::count();
     }
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Category Name')
+                    ->label('Grade Name')
                     ->unique(ignoreRecord: true)
                     ->required(),
             ]);
@@ -53,15 +50,10 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->placeholder('Null')
-                    ->label('ID')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->placeholder('No Category Name')
-                    ->label('Category Name')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Grade Name')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -73,6 +65,7 @@ class CategoryResource extends Resource
             ])
             ->filters([
                 Filter::make('created_at')
+                    ->label('Range')
                     ->form([
                         DatePicker::make('created_from'),
                         DatePicker::make('created_until'),
@@ -87,7 +80,7 @@ class CategoryResource extends Resource
                                 $data['created_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -97,9 +90,9 @@ class CategoryResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()
-                        ->visible(fn () => auth()->user()->can('export_category'))
+                        ->visible(fn () => auth()->user()->can('export_grade'))
                         ->exports([
-                            CategoryCustomExport::make('selected')
+                            GradeCustomExport::make('selected')
                         ]),
                 ]),
             ]);
@@ -115,9 +108,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListGrades::route('/'),
+            'create' => Pages\CreateGrade::route('/create'),
+            'edit' => Pages\EditGrade::route('/{record}/edit'),
         ];
     }
 }

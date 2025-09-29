@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             
             $table->enum('status', ['Incomplete', 'Complete'])->nullable()->default('Incomplete');
-            $table->tinyInteger('num_lab');
-            $table->enum('class_name', ['X RPL', 'X DKV', 'X TKJ', 'XI RPL', 'XI DKV', 'XI TKJ', 'XII RPL', 'XII DKV', 'XII TKJ'])->nullable();
+            $table->foreignId('location_id')->nullable()->constrained('locations')->onDelete('set null');
+            // $table->enum('class_name', ['X RPL', 'X DKV', 'X TKJ', 'XI RPL', 'XI DKV', 'XI TKJ', 'XII RPL', 'XII DKV', 'XII TKJ'])->nullable();
+            $table->foreignId('grade_id')->nullable()->constrained('grades')->onDelete('set null');
             $table->tinyInteger('num_students')->nullable();
 
             $table->string('lab_function')->nullable();

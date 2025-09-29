@@ -29,7 +29,7 @@ class MaintenanceResource extends Resource
     protected static ?string $navigationLabel = 'Maintenance';
 
     // 3. Posisi di menu (urutan)
-    protected static ?int $navigationSort = 5; // angka kecil = lebih depan
+    protected static ?int $navigationSort = 7; // angka kecil = lebih depan
 
     // 5. Tambahkan badge jumlah
     public static function getNavigationBadge(): ?string
@@ -101,13 +101,15 @@ class MaintenanceResource extends Resource
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Start At')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Finished At')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
                 Filter::make('created_at')

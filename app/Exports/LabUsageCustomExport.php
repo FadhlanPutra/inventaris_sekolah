@@ -25,14 +25,26 @@ class LabUsageCustomExport extends ExcelExport
                     ),
 
                 Column::make('status')->heading('Status'),
-                Column::make('num_lab')->heading('Lab'),
-                Column::make('class_name')->heading('Class Name'),
+                Column::make('location_id')
+                    ->heading('Location')
+                    ->formatStateUsing(fn ($state, $record) =>
+                        $record->location_id
+                            ? $record->location->name 
+                            : '-'
+                    ),
+                Column::make('grade_id')
+                    ->heading('Grade')
+                    ->formatStateUsing(fn ($state, $record) =>
+                        $record->grade_id
+                            ? $record->grade->name
+                            : '-'
+                    ),
                 Column::make('num_students')->heading('Students'),
                 Column::make('lab_function')
                     ->heading('Lab Function')
                     ->formatStateUsing(fn ($state, $record) =>
-                        $record->num_lab 
-                            ? "Lab " . $record->num_lab
+                        $record->lab_function 
+                            ? $record->lab_function
                             : '-'
                     ),
                 Column::make('end_state')->heading('End State'),
