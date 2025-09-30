@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             GenerateSeeder::class,
             ShieldSeeder::class,
-            DummyData::class,
+            // DummyData::class,
         ]);
     }
 }
